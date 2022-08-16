@@ -1,0 +1,130 @@
+
+.wyy_main{
+  width: 100%;
+  height: 100%;
+  display: flex;
+  .main_left{
+    cursor: pointer;
+    height: 100%;
+    width: 10.107rem;
+    max-width:250px;
+    padding-left:0.911rem ;
+    overflow-y:scroll;
+    border-right:0.036rem solid #4c4949 ;
+    background-color: #2b2b2b;
+    &::-webkit-scrollbar {
+      /*滚动条整体样式*/
+      width: 5px;
+      /*高宽分别对应横竖滚动条的尺寸*/
+      // height: 5px;
+  }
+  &::-webkit-scrollbar-thumb {
+    /*滚动条里面小方块*/
+    border-radius: 10px;
+    // box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+    background: #9b8f8f;
+}
+// &::-webkit-scrollbar-track {
+//   /*滚动条里面轨道*/
+//   box-shadow: inset 0 0 5px rgba(168, 81, 81, 0.2);
+//   height: 5px;
+//   border-radius: 10px;
+//   background: #4bbe5d;
+// }
+    li{
+      color: #fff;
+      margin-top: 0.911rem;
+      padding:0.182rem 0rem 0.182rem 0.182rem;
+      font-size: 0.729rem;
+      border-radius: 0.112rem;
+    }
+    .commonMusic{
+      .right{
+        font-size:0.801rem;
+        padding: 0 0;
+      }
+      li{
+        i{
+          padding-right: 0.255rem;
+        }
+        &:not(&:first-child){
+          
+          &:hover{  
+            background-color: #333333;
+          }
+        }
+        &:first-child{
+          color: #9f9f9f;
+          font-size: 0.583rem;
+        }
+      }
+      
+    }
+   
+    .findMusic{
+      
+      li{
+        padding:0.182rem 0rem 0.182rem 0.182rem;
+        &:hover{  
+          background-color: #333333;
+        }
+      }
+    }
+    .foundMusic{
+     .foundMusic_right{ 
+      display: flex;
+      align-items: center;
+      .plus{
+        margin-left: auto;
+        margin-right: 0.382rem;
+      }
+    }
+      button{
+        text-align: center;
+        margin-left: auto;
+        margin-right: 0.482rem;
+        width: 1.575rem;
+        height: 0.911rem;
+        border: 1px solid #444444;
+        border-radius: 0.364rem;
+        background-color:transparent;
+        color: #fff;
+        // background-color: #e1c3c3;
+        i{
+          padding:  0 0;
+        }
+      }
+      
+    }
+    .collectMusic{
+      .lastLi{
+            padding-bottom: 0.729rem;
+      }
+    }
+   
+  }
+  .main_right{
+    width: 100% - 10.107rem;
+    height: 100%;
+    .main_nav{
+      width: 100%;
+      height: 20px;
+    }
+    .main_hostswpr{
+      width: 60%;
+      height: 40px;
+      margin: 0 auto;
+     a{
+       display: block;
+       width: 100%;
+       height: 200px;
+       background: url(../update/109951167705163214.jpg) no-repeat;
+       background-size: 100% 100%;
+       &:nth-child(2){
+        background: url(../update/109951167705141736.jpg) no-repeat;
+       }
+     }
+    }
+  
+  }
+}

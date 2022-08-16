@@ -3,6 +3,7 @@
 * {
   margin: 0;
   padding: 0;
+  color: #fff;
   /* css3盒子模型 */
   box-sizing: border-box;
 }
@@ -93,4 +94,53 @@ body {
 
 .clearfix {
   *zoom: 1;
+}
+
+/* 取消饿了么ui的导航鼠标经过样式 */
+/* //设置二级菜单的默认样式 */
+.el-menu-item {
+  height: 100% !important;
+  color: #fff;
+  background-color: transparent !important;
+}
+.el-menu--horizontal .el-menu-item:not(.is-disabled):focus,
+.el-menu--horizontal .el-menu-item:not(.is-disabled):hover {
+  color: #fff !important;
+}
+/* //设置二级菜单的鼠标经过时候的样式 */
+.el-menu-item:hover {
+  background-color: none !important;
+  color: #fff !important;
+}
+/* 设置一级菜单选项默认状态的样式 */
+.el-submenu__title {
+  font-size: 16px;
+  background-color: transparent !important;
+}
+/* 设置一级菜单选项鼠标经过的样式 */
+.el-submenu__title:hover {
+  color: #409eff !important;
+  background-color: #252f3b !important;
+}
+/* 设置一级菜单点开后的状态 */
+/* .el-submenu.is-opened .el-submenu__title {
+  color: #409eff !important;
+  background-color: #256fc9 !important;
+  border-left: 2px solid #409eff;
+} */
+/* //首页默认样式 */
+/* .el-menu-item.firstPageMenu {
+  font-size: 16px;
+  background-color: transparent !important;
+} */
+/* //首页鼠标经过样式 */
+/* .firstPageMenu.el-menu-item:hover {
+  color: #409eff !important;
+  background-color: #e0e5eb !important;
+} */
+/* //设置首页选中时候的样式 */
+.firstPageMenu.el-menu-item.is-active {
+  color: #409eff !important;
+  background-color: #252f3b !important;
+  border-left: 2px solid #409eff;
 }

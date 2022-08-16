@@ -1,4 +1,5 @@
 <template>
+  <!-- 个人推荐 -->
   <div class="wapper_width">
     <div class="main_wapper">
       <!-- 轮播图 -->
@@ -24,30 +25,63 @@
               <!-- 上5 -->
               <li v-for="item in SongList" :key="item.id">
                 <div class="daily_push">
-                  <img :src="item.picUrl" alt="" />
+                  <el-image :src="item.picUrl" :lazy="true"></el-image>
+                  <!-- <img :src="item.picUrl" alt="" /> -->
                 </div>
                 <p class="playlist_introduced">{{ item.name }}</p>
               </li>
             </ul>
           </div>
         </div>
+        <!-- 无接口改为最新音乐 -->
         <!-- 播客 -->
+        <div class="recommend">
+          <h3 class="playlist_title">最新音乐</h3>
+          <div class="podcast_table">
+            <ul>
+              <li v-for="obj in newSongLIst" :key="obj.id">
+                <div class="podcast_img">
+                  <img :src="obj.picUrl" alt="" />
+                </div>
+                <!-- 文字 -->
+                <div class="song_msg">
+                  <h4 class="song_name">{{ obj.name }}</h4>
+                  <p class="song_type"><span>{{obj.song.album.subType}}</span></p>
+                  <div class="song_else">
+                    <span class="song_author"> {{ obj.song.artists[0].name }} </span>
+                    <span class="song_host">
+                      <i class="iconfont">&#xe7c5;</i>
+                      <span>{{obj.song.album.pic}}万</span>
+                    </span>
+                    <span class="song_time">
+                      <i class="iconfont time">&#xe601;</i>
+                      {{ obj.song.album.publishTime | secondeTime }}
+                    </span>
+                  </div>
+                </div>
+              </li>
+              <!-- 接口循环 -->
+            </ul>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { RecommendThePlayListAPI } from '@/api/index' // 测试接口
+import { RecommendThePlayListAPI, RecommendNewMusicAPI } from '@/api/index' // 测试接口
 export default {
   name: 'MainIndex',
   data () {
     return {
-      SongList: [] // 推荐歌单数据
+      SongList: [], // 推荐歌单数据
+      newSongLIst: [] // 最新音乐
     }
   },
   created () {
     this.recommendSong() // 推荐歌单
+    this.NewMusic(10)
   },
   methods: {
     // 推荐歌单
@@ -58,6 +92,11 @@ export default {
       } catch (error) {
         console.log(error)
       }
+    },
+    async NewMusic (num) {
+      const { data } = await RecommendNewMusicAPI(num)
+      console.log(data)
+      this.newSongLIst = data.result
     }
   }
 }
@@ -127,13 +166,15 @@ export default {
       height: 10000px;
       width: 100%;
       margin: 0 auto;
+      //标题
+      .playlist_title {
+        margin-bottom: 0.625rem;
+        font-weight: 800;
+        font-size: 24px;
+        color: #fff;
+      }
       .recommend {
         color: #fff; // 测试
-        //标题
-        .playlist_title {
-          font-size: 26px;
-          color: #fff;
-        }
         // 内容
         .recommend_table {
           // display: flex;
@@ -146,7 +187,7 @@ export default {
               flex: 16.6666%;
               // float: left;
               width: 200px;
-              margin: 0.4167rem;
+              margin: 0 0.4167rem 0.4167rem 0.4167rem;
               &:nth-child(6n),
               &:first-child {
                 margin-left: 0;
@@ -171,6 +212,57 @@ export default {
                 padding: 10px;
                 font-size: 14px;
               }
+            }
+          }
+        }
+      }
+      .podcast_table {
+        ul {
+          display: flex;
+          flex-wrap: wrap;
+          li {
+            flex: 50%;
+            display: flex;
+            margin-bottom: 0.6667rem;
+            align-items: center;
+            .podcast_img {
+              margin-right: 0.3333rem;
+              width: 3.125rem;
+              height: 3.125rem;
+              border-radius: 0.1667rem;
+              overflow: hidden;
+              img {
+                width: 100%;
+                height: 100%;
+              }
+            }
+            .song_msg {
+              * {
+                color: #727272;
+                padding-bottom: 2px;
+              }
+              .song_name {
+                color: #fff;
+                font-size: 14px;
+              }
+              .song_type {
+                span {
+                  border: 1px solid #3c3c3c;
+                }
+              }
+              .song_else {
+                display: flex;
+                justify-content: center;
+                & > span {
+                  padding-left: 2px;
+                }
+                .song_host {
+                  .time {
+                    font-size: 0.5833rem !important;
+                  }
+                }
+              }
+              // letter-spacing:0.5px
             }
           }
         }

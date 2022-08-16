@@ -4,7 +4,8 @@ import './styles/base.css'
 import './util/fonts/iconfont.css'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
-// import { RecommendThePlayListAPI } from '@/api/index' // 测试接口
+import '@/util/dayjs.js'
+// import { RecommendNewMusicAPI } from '@/api/index' // 测试接口
 // import './util/split.js'
 import router from './router'
 // import store from './store'
@@ -27,7 +28,7 @@ Vue.nextTick(() => {
 })
 // 接口测试
 // async function testAPI () {
-//   const res = await RecommendThePlayListAPI()
+//   const res = await RecommendNewMusicAPI(10)
 //   console.log(res)
 // }
 // testAPI()

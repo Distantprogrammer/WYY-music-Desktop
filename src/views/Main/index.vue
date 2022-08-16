@@ -61,7 +61,7 @@ export default {
       background: #e2dcdc;
     }
     .main_clear_nav {
-      margin-top: 3.3333rem;
+      margin-top: 80px;
     }
   }
 }

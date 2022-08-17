@@ -6,6 +6,7 @@
   color: #fff;
   /* css3盒子模型 */
   box-sizing: border-box;
+  cursor: pointer;
 }
 
 html {
@@ -98,7 +99,11 @@ body {
 
 /* 取消饿了么ui的导航鼠标经过样式 */
 /* //设置二级菜单的默认样式 */
+.el-menu-item{
+  padding: 0 !important;
+}
 .el-menu-item {
+  margin: 0 20px !important;
   height: 100% !important;
   color: #fff;
   background-color: transparent !important;
@@ -143,4 +148,6 @@ body {
   color: #409eff !important;
   background-color: #252f3b !important;
   border-left: 2px solid #409eff;
+  /* border-bottom-left-radius:3px !important;
+  border-bottom-right-radius:3px !important; */
 }

@@ -4,13 +4,11 @@
     <div class="main_wapper">
       <!-- 轮播图 -->
       <div class="main_slideshow">
-        <el-carousel :interval="4000" type="card" height="200px" id="el">
-          <el-carousel-item v-for="item in 6" :key="item">
-            <a href="javascrip:;">
-              <img
-                src="https://p1.music.126.net/OTSRvD0r8s0dmRrS752JBA==/109951167775152845.jpg?imageView&quality=89"
-                alt=""
-              />
+        <el-carousel :interval="4000" type="card" height="200px" id="el" loop>
+          <el-carousel-item v-for="item in bannerList" :key="item.targetId">
+            <a class="img_a" href="javascrip:;">
+              <el-image class="slideshow_img" :src="item.imageUrl" alt="">
+              </el-image>
             </a>
           </el-carousel-item>
         </el-carousel>
@@ -19,13 +17,15 @@
       <div class="main_song_list">
         <!-- 推荐 -->
         <div class="recommend">
-          <h3 class="playlist_title">推荐歌单</h3>
+          <h3 class="playlist_title">
+            推荐歌单 <i class="iconfont icon-arrow-right-bold arrow_right"></i>
+          </h3>
           <div class="recommend_table">
             <ul>
               <!-- 上5 -->
               <li v-for="item in SongList" :key="item.id">
                 <div class="daily_push">
-                  <el-image :src="item.picUrl" :lazy="true"></el-image>
+                  <el-image :src="item.picUrl" lazy></el-image>
                   <!-- <img :src="item.picUrl" alt="" /> -->
                 </div>
                 <p class="playlist_introduced">{{ item.name }}</p>
@@ -36,26 +36,34 @@
         <!-- 无接口改为最新音乐 -->
         <!-- 播客 -->
         <div class="recommend">
-          <h3 class="playlist_title">最新音乐</h3>
+          <h3 class="playlist_title">
+            最新音乐
+            <i class="iconfont icon-arrow-right-bold arrow_right"></i>
+          </h3>
           <div class="podcast_table">
             <ul>
               <li v-for="obj in newSongLIst" :key="obj.id">
-                <div class="podcast_img">
+                <div class="podcast_img position_relative" @click="playFn(obj.id)">
+                  <Playbtn class="play"></Playbtn>
                   <img :src="obj.picUrl" alt="" />
                 </div>
                 <!-- 文字 -->
                 <div class="song_msg">
                   <h4 class="song_name">{{ obj.name }}</h4>
-                  <p class="song_type"><span>{{obj.song.album.subType}}</span></p>
+                  <p class="song_type">
+                    <span>{{ obj.song.album.subType }}</span>
+                  </p>
                   <div class="song_else">
-                    <span class="song_author"> {{ obj.song.artists[0].name }} </span>
+                    <span class="song_author">
+                      {{ obj.song.artists[0].name }}
+                    </span>
                     <span class="song_host">
                       <i class="iconfont">&#xe7c5;</i>
-                      <span>{{obj.song.album.pic}}万</span>
+                      <span>52万</span>
                     </span>
                     <span class="song_time">
                       <i class="iconfont time">&#xe601;</i>
-                      {{ obj.song.album.publishTime | secondeTime }}
+                      {{ obj.song.hMusic.playTime | secondeTime }}
                     </span>
                   </div>
                 </div>
@@ -64,39 +72,156 @@
             </ul>
           </div>
         </div>
+        <!-- 独家放送 -->
+        <div class="recommend">
+          <h3 class="playlist_title">
+            独家放送
+            <i class="iconfont icon-arrow-right-bold arrow_right"></i>
+          </h3>
+          <div class="exclusive_table">
+            <div
+              class="exclusive_box"
+              v-for="item in exclusiveList"
+              :key="item.id"
+            >
+              <div class="exclusive_img">
+                <img :src="item.sPicUrl" alt="" />
+              </div>
+              <p class="exclusive_title">
+                <a href="javascript:;">{{ item.copywriter }}</a>
+              </p>
+            </div>
+          </div>
+        </div>
+        <!-- 推荐mv -->
+        <div class="recommend">
+          <h3 class="playlist_title">
+            推荐MV
+            <i class="iconfont icon-arrow-right-bold arrow_right"></i>
+          </h3>
+          <div class="mv_table">
+            <div class="mv_box" v-for="item in mvList" :key="item.id">
+              <div class="mv_img">
+                <img :src="item.picUrl" alt="" />
+              </div>
+              <div class="mv_msg">
+                <p class="mv_title">
+                  <a href="javascript:;">{{ item.name }}</a>
+                </p>
+                <p class="mv_name">
+                  <a
+                    href="javascript:;"
+                    v-for="(arr, index) in item.artists"
+                    :key="arr.id"
+                    >{{ arr.name
+                    }}<b v-if="item.artists.length - 1 !== index"> / </b></a
+                  >
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- 调整顺序 -->
+        <div class="recommend">
+          <div class="layout_order">
+            <p class="layout_hint">
+              现在可以根据个人喜好， 自由调整首页栏目顺序啦~
+            </p>
+            <button class="layout_btn">调整栏目顺序</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { RecommendThePlayListAPI, RecommendNewMusicAPI } from '@/api/index' // 测试接口
+import {
+  HomeBannerAPI,
+  RecommendThePlayListAPI,
+  RecommendNewMusicAPI,
+  ExclusiveAndPoredOverAPI,
+  RecommendedMVAPI
+} from '@/api/index'
+import Playbtn from '@/components/playBtn.vue'
+// import { mapMutations } from 'vuex'
 export default {
   name: 'MainIndex',
   data () {
     return {
+      bannerList: [], // 轮播图
       SongList: [], // 推荐歌单数据
-      newSongLIst: [] // 最新音乐
+      newSongLIst: [], // 最新音乐
+      exclusiveList: [], // 独家放送
+      mvList: [] // 推荐mv
     }
   },
+  components: {
+    Playbtn
+  },
   created () {
-    this.recommendSong() // 推荐歌单
-    this.NewMusic(10)
+    // this.BannerImg() // 轮播图
+    // this.recommendSong() // 推荐歌单
+    this.NewMusic() // 最新音乐
+    // this.Exclusive() // 独家放送
+    // this.RecommendedMV() // 推荐mv
   },
   methods: {
+    // 轮播图
+    async BannerImg () {
+      try {
+        const { data } = await HomeBannerAPI({
+          type: 0
+        })
+        // console.log(data)
+        this.bannerList = data.banners
+      } catch (error) {
+        console.log(error)
+      }
+    },
     // 推荐歌单
     async recommendSong () {
-      const { data } = await RecommendThePlayListAPI()
       try {
+        const { data } = await RecommendThePlayListAPI({
+          limit: 10
+        })
         this.SongList = data.result
       } catch (error) {
         console.log(error)
       }
     },
-    async NewMusic (num) {
-      const { data } = await RecommendNewMusicAPI(num)
-      console.log(data)
-      this.newSongLIst = data.result
+    // 最新音乐
+    async NewMusic () {
+      try {
+        const { data } = await RecommendNewMusicAPI({
+          limit: 6
+        })
+        this.newSongLIst = data.result
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    // 独家放送
+    async Exclusive () {
+      try {
+        const { data } = await ExclusiveAndPoredOverAPI()
+        this.exclusiveList = data.result
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    // 推荐mv
+    async RecommendedMV () {
+      try {
+        const { data } = await RecommendedMVAPI()
+        console.log(data)
+        this.mvList = data.result
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    playFn (id) {
+      this.$store.commit('getIdMusic', id)
     }
   }
 }
@@ -126,10 +251,9 @@ export default {
     width: 100%;
     min-width: 1050px;
     max-width: 1120px;
+    margin-bottom: 12.579rem;
     //轮播图
-    /depp/ .main_slideshow {
-      // max-width: 1000px;
-      // margin: 0 auto;
+    .main_slideshow {
       .el-carousel__item {
         &:nth-child(2n) {
           background-color: #99a9bf;
@@ -137,21 +261,22 @@ export default {
         &:nth-child(2n + 1) {
           background-color: #d3dce6;
         }
-        #el {
-          .el-carousel__button {
-            width: 10px;
-            height: 5px;
-            border-radius: 50%;
-            background-color: #ec4141;
-          }
-        }
-      }
-      a {
-        display: block;
-        width: 100%;
-        img {
+        a {
+          display: block;
           width: 100%;
           height: 100%;
+          .slideshow_img {
+            width: 100%;
+            height: 100%;
+          }
+          #el {
+            .el-carousel__button {
+              width: 10px;
+              height: 5px;
+              border-radius: 50%;
+              background-color: #ec4141;
+            }
+          }
         }
         // height: 200px;
         // background: url() no-repeat;
@@ -163,7 +288,7 @@ export default {
     }
     // 推荐歌单
     .main_song_list {
-      height: 10000px;
+      // height: 10000px;
       width: 100%;
       margin: 0 auto;
       //标题
@@ -174,8 +299,13 @@ export default {
         color: #fff;
       }
       .recommend {
-        color: #fff; // 测试
-        // 内容
+        color: #d0d0d0; // 测试
+        .arrow_right {
+          font-size: 22px;
+          color: #d0d0d0;
+          font-weight: normal;
+        }
+        // 推荐歌单内容
         .recommend_table {
           // display: flex;
           // flex-direction: column;
@@ -198,6 +328,8 @@ export default {
               }
               // 图片
               div {
+                border-radius: 5px;
+                overflow: hidden;
                 width: 100%;
                 height: 200px;
                 img {
@@ -216,6 +348,7 @@ export default {
           }
         }
       }
+      // 最新音乐
       .podcast_table {
         ul {
           display: flex;
@@ -225,10 +358,13 @@ export default {
             display: flex;
             margin-bottom: 0.6667rem;
             align-items: center;
+            &:hover .song_msg {
+              border-radius: 0.1667rem;
+              background-color: #3c3c3c;
+            }
             .podcast_img {
-              margin-right: 0.3333rem;
-              width: 3.125rem;
-              height: 3.125rem;
+              width: 75px;
+              height: 75px;
               border-radius: 0.1667rem;
               overflow: hidden;
               img {
@@ -237,7 +373,10 @@ export default {
               }
             }
             .song_msg {
+              padding: 0.2083rem 0 0 0.625rem;
+              flex: 1;
               * {
+                letter-spacing: 0.5px;
                 color: #727272;
                 padding-bottom: 2px;
               }
@@ -251,8 +390,9 @@ export default {
                 }
               }
               .song_else {
-                display: flex;
-                justify-content: center;
+                // display: flex;
+                // justify-content: center;
+                // align-items: baseline;
                 & > span {
                   padding-left: 2px;
                 }
@@ -262,12 +402,118 @@ export default {
                   }
                 }
               }
-              // letter-spacing:0.5px
+            }
+          }
+        }
+      }
+      // 独家放送
+      .exclusive_table {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        font-size: 14px;
+        // color: #000;
+        .exclusive_box {
+          &:nth-child(2) {
+            margin: 0 20px;
+          }
+          .exclusive_img {
+            width: 355px;
+            height: 200px;
+            border-radius: 5px;
+            overflow: hidden;
+            img {
+              width: 100%;
+              height: 100%;
+            }
+          }
+          .exclusive_title {
+            padding-top: 10px;
+            a {
+              color: #d0d0d0;
+            }
+          }
+        }
+      }
+      // 调整栏目顺序
+      .layout_order {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 1.25rem;
+        .layout_hint {
+          color: #4b4b4b;
+          font-size: 14px;
+          margin-bottom: 0.4167rem;
+        }
+        .layout_btn {
+          width: 125px;
+          height: 35px;
+          text-align: center;
+          line-height: 35px;
+          font-size: 14px;
+          border-radius: 2px;
+          color: #d0d0d0;
+          background-color: transparent;
+          border: 1px solid #4b4b4b;
+        }
+      }
+      // 推荐mv
+      .mv_table {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        font-size: 14px;
+        // color: #000;
+        .mv_box {
+          flex: 25%;
+          &:nth-child(n) {
+            margin-right: 0.625rem;
+          }
+          &:nth-child(4) {
+            margin-right: 0;
+          }
+          .mv_img {
+            // width: 260px;
+            height: 150px;
+            border-radius: 5px;
+            overflow: hidden;
+            img {
+              width: 100%;
+              height: 100%;
+            }
+          }
+          .mv_msg {
+            .mv_title {
+              padding-top: 10px;
+              a {
+                font-size: 0.5833rem;
+                color: #d0d0d0;
+              }
+            }
+            .mv_name {
+              // padding-top: 10px;
+              b {
+                color: #7c5d5d;
+              }
+              a {
+                font-size: 0.5833rem;
+                color: #7c5d5d;
+              }
             }
           }
         }
       }
     }
   }
+}
+.position_relative {
+  position: relative;
+}
+.play {
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
 }
 </style>

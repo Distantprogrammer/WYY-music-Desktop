@@ -5,13 +5,14 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    playId: ''
   },
-  getters: {
-  },
+  getters: {},
   mutations: {
+    getIdMusic (state, paylond) {
+      state.playId = paylond
+    }
   },
-  actions: {
-  },
-  modules: {
-  }
+  actions: {},
+  modules: {}
 })

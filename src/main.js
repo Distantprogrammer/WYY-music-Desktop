@@ -5,10 +5,10 @@ import './util/fonts/iconfont.css'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import '@/util/dayjs.js'
-// import { RecommendNewMusicAPI } from '@/api/index' // 测试接口
+// import { ExclusiveAndPoredOverAPI } from '@/api/index' // 测试接口
 // import './util/split.js'
 import router from './router'
-// import store from './store'
+import store from './store'
 
 Vue.nextTick(() => {
   const MainScroll = document.querySelector('.wyy_main')
@@ -28,7 +28,7 @@ Vue.nextTick(() => {
 })
 // 接口测试
 // async function testAPI () {
-//   const res = await RecommendNewMusicAPI(10)
+//   const res = await ExclusiveAndPoredOverAPI()
 //   console.log(res)
 // }
 // testAPI()
@@ -38,6 +38,6 @@ Vue.config.productionTip = false
 
 new Vue({
   router,
-  // store,
+  store,
   render: (h) => h(App)
 }).$mount('#app')

@@ -1,4 +1,4 @@
-import request from '@/util/request'
+import request from '@/utils/request'
 
 // 播放页 - 获取歌曲详情
 export const getSongById = (id) =>

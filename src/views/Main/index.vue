@@ -42,6 +42,7 @@ export default {
   width: 100%;
   height: 100%;
   display: flex;
+  background-color: #2b2b2b;
   .main_right {
     // overflow-y: auto;
     flex: 5;

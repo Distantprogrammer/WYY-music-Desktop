@@ -43,7 +43,8 @@
           <div class="podcast_table">
             <ul>
               <li v-for="obj in newSongLIst" :key="obj.id">
-                <div class="podcast_img position_relative" @click="playFn(obj.id)">
+                <!-- 把点击的歌曲信息传过去 -->
+                <div class="podcast_img position_relative" @click="playFn(obj)">
                   <Playbtn class="play"></Playbtn>
                   <img :src="obj.picUrl" alt="" />
                 </div>
@@ -143,6 +144,7 @@ import {
   ExclusiveAndPoredOverAPI,
   RecommendedMVAPI
 } from '@/api/index'
+
 import Playbtn from '@/components/playBtn.vue'
 // import { mapMutations } from 'vuex'
 export default {
@@ -166,6 +168,7 @@ export default {
     // this.Exclusive() // 独家放送
     // this.RecommendedMV() // 推荐mv
   },
+  // 检查本地存储是否有，没有自动发起接口
   methods: {
     // 轮播图
     async BannerImg () {
@@ -220,8 +223,8 @@ export default {
         console.log(error)
       }
     },
-    playFn (id) {
-      this.$store.commit('getIdMusic', id)
+    playFn (obj) {
+      this.$store.commit('getIdMusic', obj)
     }
   }
 }

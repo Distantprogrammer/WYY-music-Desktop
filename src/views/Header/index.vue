@@ -61,7 +61,9 @@
 </template>
 
 <script>
-export default {}
+export default {
+  name: 'HeaderIndex'
+}
 </script>
 
 <style lang="less" scoped>

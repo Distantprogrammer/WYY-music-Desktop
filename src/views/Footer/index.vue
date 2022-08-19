@@ -6,14 +6,25 @@
         <!-- 音乐图像 -->
         <div class="icon">
           <div class="modal"><i class="iconfont">&#xe687;</i></div>
-          <img src="" alt="展示音乐详情页" />
+          <img :src="params.picUrl" alt="展示音乐详情页" />
         </div>
         <!-- 音乐名 作者 -->
         <div class="song">
           <div class="name">
-            <a href="#">起风了</a><i class="iconfont">&#xeca1;</i>
+            <a href="#">{{ params.name }}</a
+            ><i class="iconfont" :class="{ liekactive: !params.canDislike }"
+              >&#xeca1;</i
+            >
           </div>
-          <div class="author"><a href="#">买辣椒也用劵</a></div>
+          <div class="author">
+            <a
+              href="javascript:;"
+              v-for="(arr, index) in params.song.artists"
+              :key="arr.id"
+              >{{ arr.name
+              }}<b v-if="params.song.artists.length - 1 !== index"> / </b></a
+            >
+          </div>
         </div>
       </div>
       <!-- 播放设置 -->
@@ -22,20 +33,42 @@
           <li class=""><i class="iconfont">&#xe6b4;</i></li>
           <li class=""><i class="iconfont">&#xe7ef;</i></li>
           <li class="paly" @click="audioStart">
-            <i class="iconfont">{{
-              id ? (playState ? '&#xe6de;' : '&#xe7c5;') : false
-            }}</i>
+            <!-- 怎样实现其他页面点击播放，切换播放按钮图标
+1.监听器是否可以？
+2.使用vuex传值过来激活？ -->
+            <i class="iconfont">{{ playState ? '&#xe6de;' : '&#xe7c5;' }}</i>
           </li>
           <li class=""><i class="iconfont">&#xe7ef;</i></li>
           <li class="word">词</li>
         </ul>
         <div class="schedule">
-          <span class="start">00:40</span>
-          <div class="progressBar">
-            <div class="progressBar_background"></div>
+          <span class="start" ref="start">{{ currentTime | transTime }}</span>
+          <div
+            ref="progressBar"
+            @click="clickProgressFn($event)"
+            class="progressBar"
+          >
+            <!-- :style="'width:' + progressBarWidth + '%'" -->
+            <div
+              ref="progressBar_background"
+              class="progressBar_background"
+            ><span class="moveProgress"></span></div>
           </div>
-          <span class="end">03:00</span>
+          <span class="end">{{ totalTime | transTime }}</span>
         </div>
+        <!-- 播放音乐真正的标签
+      看接口文档: 音乐地址需要带id去获取(但是有的歌曲可能404)
+      https://binaryify.github.io/NeteaseCloudMusicApi/#/?id=%e8%8e%b7%e5%8f%96%e9%9f%b3%e4%b9%90-url
+     -->
+        <!-- loadedmetadata事件为音频/视频文件加载完数据后触发 duration 获取音频的时长，单位为s -->
+        <!-- timeupdate 事件是在播放位置改变时触发 currentTime 获得当前播放时间，一般和timeupdate事件联合使用 -->
+        <audio
+          @loadedmetadata="setTimeFn($event.srcElement.duration)"
+          @timeupdate="timeupdateFn($event.srcElement.currentTime)"
+          ref="audio"
+          preload="true"
+          :src="`https://music.163.com/song/media/outer/url?id=${params.id}.mp3`"
+        ></audio>
       </div>
       <!-- 音效 -->
       <div class="acoustics">
@@ -48,72 +81,102 @@
         </ul>
       </div>
     </div>
-    <!-- 播放音乐真正的标签
-      看接口文档: 音乐地址需要带id去获取(但是有的歌曲可能404)
-      https://binaryify.github.io/NeteaseCloudMusicApi/#/?id=%e8%8e%b7%e5%8f%96%e9%9f%b3%e4%b9%90-url
-     -->
-    <audio
-      ref="audio"
-      preload="true"
-      :src="`https://music.163.com/song/media/outer/url?id=${id}.mp3`"
-    ></audio>
   </div>
 </template>
 
 <script>
-import { getSongByIdAPI, getLyricByIdAPI } from '@/api'
+import { getSongByIdAPI, getLyricByIdAPI, RecommendNewMusicAPI } from '@/api'
 import { mapState } from 'vuex'
 export default {
   name: 'FooterIndex',
   data () {
     return {
       playState: false, // 音乐播放状态(true暂停, false播放)
-      id: this.playId, // 上一页传过来的音乐id
       songInfo: {}, // 歌曲信息
       lyric: {}, // 歌词枚举对象(需要在js拿到歌词写代码处理后, 按照格式保存到这个对象)
       curLyric: '', // 当前显示哪句歌词
-      lastLy: '' // 记录当前播放歌词
+      lastLy: '', // 记录当前播放歌词
+      totalTime: 0, // 歌曲总时间
+      currentTime: 0, // 歌曲播放进度
+      progressBarWidth: 0, // 进度条宽度
+      firstPlay: true // 解决第一次播放bug // 可能可以到其他地方调用，但是不管了
+      // playbtn: false
+      // musicMsg: {
+      //   id: '', // 上一页传过来的音乐id
+      //   candisliek: '', // 不喜欢
+      //   name: '', // 歌曲名字
+      //   picUrl: '', // 歌曲图片
+      //   song: '' // 歌曲信息
+      // }
     }
   },
   computed: {
-    ...mapState(['playId']),
+    ...mapState(['playMusicMsg']),
     params () {
-      return this.playId
+      // const { album, alias, alartists } = song
+      // this.alartistsmsg = {
+      //   album,
+      //   alias,
+      //   alartists
+      // }
+      // this.id = id
+      return this.playMusicMsg
     }
-    // needleDeg () {
-    //   // 留声机-唱臂的位置属性
-    //   return this.playState ? '-7deg' : '-38deg'
-    // }
   },
   watch: {
-    params (newValue) {
-      this.id = newValue
-      // console.log('监听深拷贝', newValue)
-      this.getSong()
-      this.showLyric()
-      // console.log(this.id)
+    params: {
+      deep: true,
+      handler (playMusicMsg) {
+        this.playState = true // 数据过来改变播放按钮状态
+        // candisliek  不喜欢  name 歌曲名字  id 歌曲id //播放要传入的id  picUrl // 歌曲图片  song // 歌曲信息
+        /**
+         * album 唱片
+         * alias 别名
+         * alartists 艺术家
+         */
+        // const { candisliek, id, name, picUrl, song } = playMusicMsg
+        // this.musicMsg = playMusicMsg
+        // console.log(this.params)
+        // this.candisliek = candisliek
+        // this.name = name
+        // this.picUrl = picUrl
+        // this.song = song
+        // this.id = id
+        this.getSong()
+        this.showLyric()
+      }
+      // immediate: true
     }
   },
+  created () {},
+  mounted () {},
   methods: {
     async getSong () {
       // 获取歌曲详情, 和歌词方法
-      const res = await getSongByIdAPI(this.id)
+      const res = await getSongByIdAPI(this.playMusicMsg.id)
+      // console.log(res)
       this.songInfo = res.data.songs[0]
       // 获取-并调用_formatLyr方法, 处理歌词
-      const lyrContent = await getLyricByIdAPI(this.id)
+      const lyrContent = await getLyricByIdAPI(this.playMusicMsg.id)
+      // console.log(lyrContent)
       const lyricStr = lyrContent.data.lrc.lyric
       this.lyric = this._formatLyr(lyricStr)
       // 初始化完毕先显示零秒歌词
       this.curLyric = this.lyric[0]
-      this.$refs.audio.play()
+      if (this.firstPlay) {
+        this.$refs.audio.play()
+        console.log(111)
+        this.firstPlay = false
+      }
     },
     _formatLyr (lyricStr) {
       // 可以看network观察歌词数据是一个大字符串, 进行拆分.
       const reg = /\[.+?\]/g //
+      // console.log(lyricStr)
       const timeArr = lyricStr.match(reg) // 匹配所有[]字符串以及里面的一切内容, 返回数组
       // console.log(timeArr); // ["[00:00.000]", "[00:01.000]", ......]
       const contentArr = lyricStr.split(/\[.+?\]/).slice(1) // 按照[]拆分歌词字符串, 返回一个数组(下标为0位置元素不要,后面的留下所以截取)
-      // console.log(contentArr);
+      // console.log(contentArr)
       const lyricObj = {} // 保存歌词的对象, key是秒, value是显示的歌词
       timeArr.forEach((item, index) => {
         // 拆分[00:00.000]这个格式字符串, 把分钟数字取出, 转换成秒
@@ -164,6 +227,64 @@ export default {
       //     this.curLyric = this.lastLy
       //   }
       // })
+    },
+    async NewMusic () {
+      try {
+        const { data } = await RecommendNewMusicAPI({
+          limit: 6
+        })
+        this.newSongLIst = data.result
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    // 音乐总时长
+    setTimeFn (duration) {
+      this.totalTime = duration
+    },
+    // 监听音频播放时间并更新进度条
+    timeupdateFn (currentTime) {
+      // console.log('时间', currentTime)
+      this.currentTime = currentTime
+      this.$nextTick(() => {
+        const value = Math.round(
+          (Math.floor(currentTime) / Math.floor(this.totalTime)) * 100,
+          0
+        ) // 当前时间/总长 再乘以一个100变成百分数
+        this.progressBarWidth = value // 使用style添加width
+
+        const progressBar = this.$refs.progressBar_background
+        progressBar.style.width = value + '%'
+      })
+    },
+    // 点击进度条
+    clickProgressFn (e) {
+      const audio = this.$refs.audio
+      const progressBarBox = this.$refs.progressBar
+      const progressBarBoxPwidth = progressBarBox.scrollWidth // 获取进度条大盒子的宽度
+      const rate =
+        (e.offsetX - (progressBarBoxPwidth - progressBarBoxPwidth) / 2) /
+        progressBarBoxPwidth
+
+      audio.currentTime = audio.duration * rate
+      this.timeupdateFn(audio.duration * rate)
+    },
+    // 滑动进度条
+    // 过滤器 现在还没用
+    transTime (tiem) {
+      const duration = parseInt(tiem)
+      let minute = parseInt(duration / 60)
+      let sec = (duration % 60) + ''
+      const isM0 = ':'
+      if (minute === 0) {
+        minute = '00'
+      } else if (minute < 10) {
+        minute = '0' + minute
+      }
+      if (sec.length === 1) {
+        sec = '0' + sec
+      }
+      return minute + isM0 + sec
     }
   }
 }
@@ -303,11 +424,28 @@ export default {
         margin: 0 0.282rem;
         background-color: #cdcdcd;
         .progressBar_background {
+          position: relative;
           max-width: 100%;
-          width: 20px;
+          width: 0;
           height: 100%;
           background-color: red;
+          .moveProgress {
+            display: block; // 改
+            position: absolute;
+            top: 0;
+            right:0;
+            transform: translate(50%, -39%);
+            background-color: red;
+            border-radius: 50%;
+            width: .4167rem;
+            height: .4167rem;
+            min-width: 5px;
+            min-height: 5px;
+          }
         }
+        &:hover .moveProgress{
+             display: block;
+          }
       }
     }
   }
@@ -340,6 +478,9 @@ export default {
         border-radius: 0.123rem;
       }
     }
+  }
+  .liekactive {
+    color: red !important;
   }
 }
 </style>

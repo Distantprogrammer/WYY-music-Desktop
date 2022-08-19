@@ -6,12 +6,11 @@ import 'dayjs/locale/zh-cn'
 
 // import relativeTime from 'dayjs/plugin/relativeTime'
 
-// // 配置使用处理相对时间的插件
+// // // 配置使用处理相对时间的插件
 // dayjs.extend(relativeTime)
 
 // 配置使用中文语言包
 dayjs.locale('zh-cn')
-
 // console.log(dayjs(197659).format('mm:ss'))
 // 全局过滤器：处理相对时间
 Vue.filter('secondeTime', value => {

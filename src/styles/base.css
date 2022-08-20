@@ -7,6 +7,12 @@
   /* css3盒子模型 */
   box-sizing: border-box;
   cursor: pointer;
+  -moz-user-select: none; /* Firefox私有属性 */
+  -webkit-user-select: none; /* WebKit内核私有属性 */
+  -ms-user-select: none; /* IE私有属性(IE10及以后) */
+  -khtml-user-select: none; /* KHTML内核私有属性 */
+  -o-user-select: none; /* Opera私有属性 */
+  user-select: none; /* CSS3属性 */
 }
 
 html {
@@ -99,7 +105,7 @@ body {
 
 /* 取消饿了么ui的导航鼠标经过样式 */
 /* //设置二级菜单的默认样式 */
-.el-menu-item{
+.el-menu-item {
   padding: 0 !important;
 }
 .el-menu-item {

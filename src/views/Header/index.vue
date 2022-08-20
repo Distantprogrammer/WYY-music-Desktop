@@ -90,7 +90,7 @@ export default {
         display: inline-block;
         width: 1.367rem;
         height: 1.367rem;
-        background: url('') no-repeat 0 0 / contain;
+        background: url('~@/images/logo.jpg') no-repeat 0 0 / contain;
         background-size: 101% 101%;
         border-radius: 50%;
         vertical-align: text-top;
@@ -202,7 +202,7 @@ export default {
             display: inline-block;
             width: 1.458rem;
             height: 1.458rem;
-            background: url() no-repeat center/contain;
+            background: url('~@/images/头像.jpg') no-repeat center/contain;
             border-radius: 50%;
             vertical-align: middle;
           }

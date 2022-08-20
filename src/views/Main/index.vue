@@ -9,7 +9,11 @@
         <!-- 清除固定定位 -->
         <div class="main_clear_nav"></div>
         <!-- 路由位置 -->
-        <router-view></router-view>
+        <div class="wapper_width">
+          <div class="main_wapper">
+            <router-view></router-view>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -38,6 +42,31 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.wapper_width {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  &::-webkit-scrollbar {
+    /*滚动条整体样式*/
+    width: 5px;
+    /*高宽分别对应横竖滚动条的尺寸*/
+    // height: 5px;
+  }
+  &::-webkit-scrollbar-thumb {
+    /*滚动条里面小方块*/
+    border-radius: 10px;
+    // box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+    background: #e2dcdc;
+  }
+  .main_wapper {
+    padding: 0 1vw;
+    margin: 0 auto;
+    width: 100%;
+    min-width: 1050px;
+    max-width: 1120px;
+    margin-bottom: 12.579rem;
+  }
+}
 .wyy_main {
   width: 100%;
   height: 100%;

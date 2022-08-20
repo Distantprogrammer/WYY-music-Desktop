@@ -6,8 +6,8 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import '@/utils/dayjs.js'
 import '@/utils/minite.js'
-// import { ExclusiveAndPoredOverAPI } from '@/api/index' // 测试接口
-// import { getItem } from '@/utils/storage'
+// import { SongListDetailsAPI } from '@/api/index' // 测试接口
+// // import { getItem } from '@/utils/storage'
 // import { RecommendNewMusicAPI } from '@/api/index' // 解决第一次访问无数据 无效
 // import './utils/split.js'
 import router from './router'
@@ -31,7 +31,9 @@ Vue.nextTick(() => {
 })
 // 接口测试
 // async function testAPI () {
-//   const res = await ExclusiveAndPoredOverAPI()
+//   const res = await SongListDetailsAPI({
+//     id: 1
+//   })
 //   console.log(res)
 // }
 // testAPI()

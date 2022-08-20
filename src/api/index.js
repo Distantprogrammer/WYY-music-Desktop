@@ -8,6 +8,7 @@ import {
 } from './DiscovrMusic'
 
 import { getSongById, getLyricById } from './Play'
+import { SongListDetails, RankingList } from './RankingList'
 /**
  * 个性推荐
  */
@@ -23,3 +24,8 @@ export const RecommendedMVAPI = RecommendedMV // 推荐MV
  */
 export const getSongByIdAPI = getSongById // 歌曲 - 播放地址
 export const getLyricByIdAPI = getLyricById // 歌曲 - 歌词数据
+/**
+ * 歌单
+ */
+export const SongListDetailsAPI = SongListDetails // 歌单详情
+export const RankingListAPI = RankingList // 排行榜入口

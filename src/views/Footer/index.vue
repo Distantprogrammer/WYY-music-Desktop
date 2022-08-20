@@ -43,16 +43,18 @@
         </ul>
         <div class="schedule">
           <span class="start" ref="start">{{ currentTime | transTime }}</span>
+          <!-- @click="clickProgressFn($event)"⬇ -->
           <div
             ref="progressBar"
-            @click="clickProgressFn($event)"
             class="progressBar"
           >
             <!-- :style="'width:' + progressBarWidth + '%'" -->
-            <div
-              ref="progressBar_background"
-              class="progressBar_background"
-            ><span class="moveProgress"></span></div>
+            <div ref="progressBar_background" class="progressBar_background">
+              <span
+                @mousedown.prevent="moveProgressFn($event)"
+                class="moveProgress"
+              ></span>
+            </div>
           </div>
           <span class="end">{{ totalTime | transTime }}</span>
         </div>
@@ -258,18 +260,31 @@ export default {
       })
     },
     // 点击进度条
-    clickProgressFn (e) {
-      const audio = this.$refs.audio
-      const progressBarBox = this.$refs.progressBar
-      const progressBarBoxPwidth = progressBarBox.scrollWidth // 获取进度条大盒子的宽度
-      const rate =
-        (e.offsetX - (progressBarBoxPwidth - progressBarBoxPwidth) / 2) /
-        progressBarBoxPwidth
+    // clickProgressFn (e) {
+    //   const audio = this.$refs.audio
+    //   const progressBarBox = this.$refs.progressBar
+    //   const progressBarBoxPwidth = progressBarBox.scrollWidth // 获取进度条大盒子的宽度
+    //   const rate =
+    //     (e.offsetX - (progressBarBoxPwidth - progressBarBoxPwidth) / 2) /
+    //     progressBarBoxPwidth
 
-      audio.currentTime = audio.duration * rate
-      this.timeupdateFn(audio.duration * rate)
-    },
+    //   audio.currentTime = audio.duration * rate
+    //   this.timeupdateFn(audio.duration * rate)
+    // },
     // 滑动进度条
+    moveProgressFn (e) {
+      // console.log(e)
+      // const audio = this.$refs.audio
+      // const progressBarBox = this.$refs.progressBar
+      // const progressBarBoxPwidth = progressBarBox.scrollWidth // 获取进度条大盒子的宽度
+      // const progressBar = this.$refs.progressBar_background
+      // progressBar.style.width = e.offsetX + 'px'
+      // const rate =
+      //   (e.offsetX - (progressBarBoxPwidth - progressBarBoxPwidth) / 2) /
+      //   progressBarBoxPwidth
+      // audio.currentTime = audio.duration * rate
+      // this.timeupdateFn(audio.duration * rate)
+    },
     // 过滤器 现在还没用
     transTime (tiem) {
       const duration = parseInt(tiem)
@@ -420,9 +435,11 @@ export default {
       .progressBar {
         width: 16.393rem;
         height: 0.182rem;
+        height: 0.3333rem; // 改
         border-radius: 0.036rem;
         margin: 0 0.282rem;
         background-color: #cdcdcd;
+        transition: all 0.2s;
         .progressBar_background {
           position: relative;
           max-width: 100%;
@@ -430,22 +447,27 @@ export default {
           height: 100%;
           background-color: red;
           .moveProgress {
-            display: block; // 改
+            opacity: 1;
             position: absolute;
-            top: 0;
-            right:0;
-            transform: translate(50%, -39%);
+            top: -0.097rem;
+            left: -0.0417rem;
+            // right: -0.0917rem;
+            bottom: 0;
+            /* transform: translate(50%, -24%); */
             background-color: red;
             border-radius: 50%;
-            width: .4167rem;
-            height: .4167rem;
+            width: 0.5167rem;
+            height: 0.5167rem;
             min-width: 5px;
             min-height: 5px;
           }
         }
-        &:hover .moveProgress{
-             display: block;
-          }
+        // &:hover {
+        //   height: .4167rem;
+        //   .moveProgress {
+        //     opacity: 1;
+        //   }
+        // }
       }
     }
   }

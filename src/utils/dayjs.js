@@ -13,6 +13,10 @@ import 'dayjs/locale/zh-cn'
 dayjs.locale('zh-cn')
 // console.log(dayjs(197659).format('mm:ss'))
 // 全局过滤器：处理相对时间
-Vue.filter('secondeTime', value => {
+Vue.filter('secondeTime', (value) => {
   return dayjs(value).format('mm:ss')
+})
+
+Vue.filter('monthTime', (value, format) => {
+  return dayjs(value).format(format)
 })

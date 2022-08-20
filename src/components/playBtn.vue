@@ -13,13 +13,13 @@ export default {
 <style lang="less" scoped>
 .playbtn {
   button {
-    background-color: #f0eeec;
+    background-color: rgba(255, 255, 255, 0.95);
     border-radius: 50%;
-    width: 20px;
-    height: 20px;
+    width: 100%;
+    height: 100%;
     text-align: center;
     i {
-      // font-size: 14px;
+      font-size: 2  em;
       // padding: 1px;
       color: red;
     }

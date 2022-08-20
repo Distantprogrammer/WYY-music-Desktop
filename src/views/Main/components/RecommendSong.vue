@@ -1,7 +1,6 @@
 <template>
   <!-- 个人推荐 -->
-  <div class="wapper_width">
-    <div class="main_wapper">
+  <div class="userRecommend">
       <!-- 轮播图 -->
       <div class="main_slideshow">
         <el-carousel :interval="4000" type="card" height="200px" id="el" loop>
@@ -25,7 +24,7 @@
               <!-- 上5 -->
               <li v-for="item in SongList" :key="item.id">
                 <div class="daily_push">
-                  <el-image :src="item.picUrl" lazy></el-image>
+                  <el-image :src="item.picUrl"></el-image>
                   <!-- <img :src="item.picUrl" alt="" /> -->
                 </div>
                 <p class="playlist_introduced">{{ item.name }}</p>
@@ -132,7 +131,6 @@
           </div>
         </div>
       </div>
-    </div>
   </div>
 </template>
 
@@ -162,11 +160,11 @@ export default {
     Playbtn
   },
   created () {
-    // this.BannerImg() // 轮播图
-    // this.recommendSong() // 推荐歌单
+    this.BannerImg() // 轮播图
+    this.recommendSong() // 推荐歌单
     this.NewMusic() // 最新音乐
-    // this.Exclusive() // 独家放送
-    // this.RecommendedMV() // 推荐mv
+    this.Exclusive() // 独家放送
+    this.RecommendedMV() // 推荐mv
   },
   // 检查本地存储是否有，没有自动发起接口
   methods: {
@@ -201,7 +199,7 @@ export default {
         })
         this.newSongLIst = data.result
       } catch (error) {
-        console.log(error)
+        console.log('网络出错', error)
       }
     },
     // 独家放送
@@ -231,30 +229,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-// 设置主题内容布局
-.wapper_width {
-  width: 100%;
-  height: 100%;
-  overflow-y: auto;
-  &::-webkit-scrollbar {
-    /*滚动条整体样式*/
-    width: 5px;
-    /*高宽分别对应横竖滚动条的尺寸*/
-    // height: 5px;
-  }
-  &::-webkit-scrollbar-thumb {
-    /*滚动条里面小方块*/
-    border-radius: 10px;
-    // box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
-    background: #e2dcdc;
-  }
-  .main_wapper {
-    padding: 0 1vw;
-    margin: 0 auto;
-    width: 100%;
-    min-width: 1050px;
-    max-width: 1120px;
-    margin-bottom: 12.579rem;
+  .userRecommend {
     //轮播图
     .main_slideshow {
       .el-carousel__item {
@@ -510,7 +485,6 @@ export default {
       }
     }
   }
-}
 .position_relative {
   position: relative;
 }

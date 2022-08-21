@@ -215,7 +215,6 @@ export default {
     async RecommendedMV () {
       try {
         const { data } = await RecommendedMVAPI()
-        console.log(data)
         this.mvList = data.result
       } catch (error) {
         console.log(error)

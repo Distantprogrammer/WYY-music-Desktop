@@ -23,6 +23,13 @@ const routes = [
     path: '/rankingList', // 排行榜
     name: 'rankingList',
     component: () => import('@/views/Main/components/RankingList.vue')
+    // children: [
+    //   {
+    //     path: '/songList', // 歌单
+    //     name: 'songList',
+    //     component: () => import('@/views/Main/components/SongList.vue')
+    //   }
+    // ]
   },
   {
     path: '/singer', // 歌手

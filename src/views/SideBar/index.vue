@@ -53,6 +53,7 @@ export default {
     height: 100%;
     // width: 10.107rem;
     min-width: 200px;
+    max-width: 355px;
     flex: 1;
     padding-left: 0.911rem;
     overflow-y: scroll;

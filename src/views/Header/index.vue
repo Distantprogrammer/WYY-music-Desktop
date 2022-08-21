@@ -8,16 +8,33 @@
         </h1>
       </div>
       <div class="wyy_search">
+        <!-- 前进回退按钮 -->
         <div class="history">
-          <span class="history_back"><i class="iconfont">&#xe685;</i></span>
-          <span class="history_next"><i class="iconfont">&#xe688;</i></span>
+          <span class="history_back" @click="$router.back()"
+            ><i class="iconfont">&#xe685;</i></span
+          >
+          <span class="history_next" @click="$router.go()"
+            ><i class="iconfont">&#xe688;</i></span
+          >
         </div>
+        <!-- 搜索模块 -->
         <div class="search_box">
           <div class="search_btn"><i class="iconfont">&#xe600;</i></div>
-          <input type="text" class="search_nav iconfont" placeholder="搜索" />
+          <!-- 搜索按钮 -->
+
+          <input type="text" class="search_input iconfont" placeholder="搜索" @blur="searchBox=false" @focus="searchBox=true" @input="searchShow=!searchShow"/>
+          <!-- 搜索子路由显示 -->
+          <div class="search_show" v-if="searchBox">
+            <!-- 搜索历史 -->
+            <searchHistory v-if="searchShow"/>
+            <!-- 搜索建议 -->
+            <searchSuggestion v-else/>
+          </div>
+
           <div class="search_voice"><i class="iconfont">&#xe647;</i></div>
         </div>
       </div>
+      <!-- 用户信息 -->
       <div class="wyy_username">
         <ul class="usermessage">
           <li class="userPhoto">
@@ -61,8 +78,21 @@
 </template>
 
 <script>
+// 导入搜索子组件
+import searchHistory from './components/search-history.vue'
+import searchSuggestion from './components/search-suggestion.vue'
 export default {
-  name: 'HeaderIndex'
+  name: 'HeaderIndex',
+  data () {
+    return {
+      searchBox: false, // 搜索界面的大盒子
+      searchShow: true // 搜索历史与搜索建议显示隐藏
+    }
+  },
+  components: {
+    searchHistory,
+    searchSuggestion
+  }
 }
 </script>
 
@@ -72,12 +102,14 @@ export default {
   position: fixed;
   top: 0;
   color: #fff;
+  z-index: 11;
   width: 100%;
   display: flex;
   background-color: #202023;
   // background-color: pink;
   align-items: center;
   height: 3.125rem;
+  border-bottom: 2px solid rgb(209, 27, 27);
   // logo模块
   .wyy_logo {
     min-width: 105px;
@@ -109,7 +141,7 @@ export default {
   .wyy_search {
     display: flex;
     width: 15.125rem;
-    margin-left: 5rem;
+    margin-left: 10rem;
     // 历史按钮箭头
     .history {
       display: flex;
@@ -124,7 +156,7 @@ export default {
         text-align: center;
         border-radius: 50%;
         font-size: 0.667rem;
-        background-color: #2a2a2d;
+        // background-color: #2a2a2d;
       }
       .history_back {
         color: #fff;
@@ -136,6 +168,7 @@ export default {
     }
     .search_box {
       // 搜索按钮
+      position: relative;
       display: flex;
       align-items: center;
       height: 3.125rem;
@@ -154,8 +187,8 @@ export default {
           font-size: 0.651rem;
         }
       }
-      .search_nav {
-        color: #69696b;
+      .search_input {
+        color: #696b6b;
         font-size: 0.667rem;
         width: 7.5rem;
         height: 1.458rem;
@@ -163,6 +196,57 @@ export default {
         border-top-right-radius: 1.167rem;
         border-bottom-right-radius: 1.167rem;
       }
+      .search_show {
+        overflow-y: auto;
+        overflow-x: hidden;
+        position: absolute;
+        // 为什么这里设置z-index没有呢
+        // ，应为父元素的层级永远比导航栏低，
+        // 所以需要吧父亲的层级提高
+        top: 110%;
+        left: -37%;
+        width: 14.75rem;
+        min-width: 254px;
+        max-height: 700px;
+        min-height: 400px;
+        height: 29.1667rem;
+        padding: 10px 20px;
+        border-radius: 10px;
+        background-color: #363636;
+        // 到格式化父盒子里使用样式
+        /deep/ .van-cell {
+          background-color: transparent !important;
+          padding: 0 !important ;
+          &::after {
+            position: static;
+            box-sizing: border-box;
+            content: ' ';
+            pointer-events: none;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            border: none;
+            -webkit-transform: none;
+            transform: none;
+          }
+        }
+        .van-cell__value {
+          flex: unset;
+        }
+        &::-webkit-scrollbar {
+          /*滚动条整体样式*/
+          width: 5px;
+          /*高宽分别对应横竖滚动条的尺寸*/
+          // height: 5px;
+        }
+        &::-webkit-scrollbar-thumb {
+          /*滚动条里面小方块*/
+          border-radius: 10px;
+          // box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+          background: #e2dcdc;
+        }
+      }
+
       .search_voice {
         margin-left: 0.26rem;
         width: 1.458rem;

@@ -47,7 +47,7 @@ export default {
   position: fixed;
   width: 100%;
   height: 80px;
-  z-index: 10;
+  z-index: 2;
   background-color: #2b2b2b;
   /deep/ .el-menu-demo {
     background-color: transparent;

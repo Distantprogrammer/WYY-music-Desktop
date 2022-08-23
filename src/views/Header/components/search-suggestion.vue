@@ -6,72 +6,157 @@
         <span slot="title">猜你想搜</span>
       </van-cell>
       <div class="search_result">
-        <van-cell title="单元格" />
-        <van-cell title="单元格" />
-        <van-cell title="单元格" />
-        <van-cell title="单元格" />
-        <van-cell title="单元格" />
-        <van-cell title="单元格" />
+        <van-cell
+          :title="obj.name"
+          v-for="(obj, index) in supposeSearch"
+          :key="index"
+        />
       </div>
     </div>
     <!-- 单曲 -->
-    <div class="single">
+    <div class="single" v-if="order.includes('playlists')">
       <van-cell icon="search">
         <span slot="title">单曲</span>
       </van-cell>
       <div class="search_result">
-        <van-cell>
+        <van-cell v-for="obj in oneSearchList" :key="obj.id">
           <span slot="title"
-            >单元格子&nbsp; <span>灰色字体</span>&nbsp;
-            <span>作者</span>
+            >{{ obj.name }}&nbsp;
+            <span class="alias" v-if="obj.alias[0]">{{ obj.alias[0] }}</span
+            >&nbsp;
+            <span>{{ obj.artists[0].name }}</span>
           </span>
         </van-cell>
       </div>
     </div>
     <!-- 歌手 -->
-    <div class="singer">
-       <van-cell icon="search">
+    <div class="singer" v-if="order.includes('artists')">
+      <van-cell icon="search">
         <span slot="title">歌手</span>
       </van-cell>
       <div class="search_result">
-        <van-cell title="歌手" />
+        <van-cell
+          :title="obj.name"
+          v-for="obj in singesSearchList"
+          :key="obj.id"
+        />
       </div>
     </div>
     <!-- 专辑 -->
-    <div class="album">
+    <div class="album" v-if="order.includes('albums')">
       <van-cell icon="search">
         <span slot="title">专辑</span>
       </van-cell>
       <div class="search_result">
-        <van-cell>
+        <van-cell v-for="obj in albumSearchList" :key="obj.id">
           <span slot="title"
-            >单元格子&nbsp;
-            <span>作者</span>
+            >{{ obj.name }}&nbsp;
+            <span>{{ obj.artist.name }}</span>
           </span>
         </van-cell>
       </div>
     </div>
     <!-- 歌单 -->
-    <div class="song_list">
-       <van-cell icon="search">
+    <div class="song_list" v-if="order.includes('playlists')">
+      <van-cell icon="search">
         <span slot="title">歌单</span>
       </van-cell>
       <div class="search_result">
-        <van-cell title="歌手" />
+        <van-cell :title="obj.name" v-for="obj in searchSongList" :key="obj.id">
+          <span slot="title">
+            {{ obj.name }}
+          </span>
+        </van-cell>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import { SuggestSearchAPI, CloudSearchAPI } from '@/api'
 export default {
-  name: 'searchSuggestion'
+  name: 'searchSuggestion',
+  props: {
+    searchValue: {
+      type: [String, Number]
+    }
+  },
+  data () {
+    return {
+      supposeSearch: [], // 猜你想搜
+      // suggestSearch: [], // 搜索建议
+      oneSearchList: [], // 单曲
+      albumSearchList: [], // 专辑
+      singesSearchList: [], // 歌手
+      searchSongList: [], // 歌单
+      order: [], // 搜到的数据
+      time: null
+      // searchType: [1, 10, 100, 1000] // 1: 单曲, 10: 专辑, 100: 歌手, 1000: 歌单
+    }
+  },
+  watch: {
+    deep: true,
+    searchValue () {
+      // console.log(111)
+      clearTimeout(this.time)
+      this.time = setTimeout(() => {
+        this.onsearch()
+      }, 500)
+      // console.log(this.searchValue)
+    },
+    immediate: true
+  },
+  methods: {
+    async onsearch () {
+      try {
+        const {
+          data: { result }
+        } = await SuggestSearchAPI({
+          keywords: this.searchValue
+        })
+        const res = await CloudSearchAPI({
+          keywords: this.searchValue,
+          limit: 12
+        })
+        this.supposeSearch = res.data.result.songs
+        this.order = result.order
+        // 有 songs ？
+        const ifsongs = {}.propertyIsEnumerable.call(result, 'songs')
+        if (ifsongs) {
+          console.log(11)
+          this.oneSearchList = result.songs
+        }
+        // 有 artists ？  // 歌手
+        const ifartists = {}.propertyIsEnumerable.call(result, 'artists')
+        if (ifartists) {
+          console.log(222)
+          this.singesSearchList = result.artists
+        }
+        // 有 albums ？
+        const ifalbums = {}.propertyIsEnumerable.call(result, 'albums')
+        if (ifalbums) {
+          console.log(333)
+          this.albumSearchList = result.albums
+        }
+        // 有 playlists ？ // 歌单
+        const ifplaylists = {}.propertyIsEnumerable.call(result, 'playlists')
+        if (ifplaylists) {
+          console.log(44)
+          this.searchSongList = result.playlists
+        }
+      } catch (error) {}
+    }
+  }
 }
 </script>
 
 <style lang="less" scoped>
 .search_result {
   padding: 0 16px;
+  white-space: nowrap;
+  .alias {
+    color: rgb(99, 88, 88);
+  }
   .van-cell__title {
     padding: 5px 0;
     font-size: 12px;

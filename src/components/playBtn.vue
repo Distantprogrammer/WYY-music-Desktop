@@ -1,12 +1,22 @@
 <template>
   <div class="playbtn">
-    <button><i class="iconfont icon-play-mini-fill"></i></button>
+    <button>
+      <i
+        class="iconfont icon-play-mini-fill"
+        :style="classAcitve "
+      ></i>
+    </button>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'PlayBtn'
+  name: 'PlayBtn',
+  props: {
+    classAcitve: {
+      type: [Object, Array, String]
+    }
+  }
 }
 </script>
 
@@ -19,7 +29,8 @@ export default {
     height: 100%;
     text-align: center;
     i {
-      font-size: 2  em;
+      // line-height: 100%;
+      font-size: 2em;
       // padding: 1px;
       color: red;
     }

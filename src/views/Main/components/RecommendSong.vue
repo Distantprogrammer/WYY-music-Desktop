@@ -4,7 +4,7 @@
       <!-- 轮播图 -->
       <div class="main_slideshow">
         <el-carousel :interval="4000" type="card" height="200px" id="el" loop>
-          <el-carousel-item v-for="item in bannerList" :key="item.targetId">
+          <el-carousel-item v-for="item in bannerList" :key="item.imageUrl">
             <a class="img_a" href="javascrip:;">
               <el-image class="slideshow_img" :src="item.imageUrl" alt="">
               </el-image>
@@ -44,7 +44,7 @@
               <li v-for="obj in newSongLIst" :key="obj.id">
                 <!-- 把点击的歌曲信息传过去 -->
                 <div class="podcast_img position_relative" @click="playFn(obj)">
-                  <Playbtn class="play"></Playbtn>
+                  <Playbtn class="play" :classAcitve="{fontSize: '1em'}"></Playbtn>
                   <img :src="obj.picUrl" alt="" />
                 </div>
                 <!-- 文字 -->
@@ -149,11 +149,11 @@ export default {
   name: 'MainIndex',
   data () {
     return {
-      bannerList: [], // 轮播图
-      SongList: [], // 推荐歌单数据
-      newSongLIst: [], // 最新音乐
-      exclusiveList: [], // 独家放送
-      mvList: [] // 推荐mv
+      // bannerList: [], // 轮播图
+      // SongList: [], // 推荐歌单数据
+      // newSongLIst: [], // 最新音乐
+      // exclusiveList: [], // 独家放送
+      // mvList: [] // 推荐mv
     }
   },
   components: {
@@ -272,13 +272,13 @@ export default {
       .playlist_title {
         margin-bottom: 0.625rem;
         font-weight: 800;
-        font-size: 24px;
+        font-size: 1rem;
         color: #fff;
       }
       .recommend {
         color: #d0d0d0; // 测试
         .arrow_right {
-          font-size: 22px;
+          font-size: .9167rem;
           color: #d0d0d0;
           font-weight: normal;
         }
@@ -293,7 +293,7 @@ export default {
             li {
               flex: 16.6666%;
               // float: left;
-              width: 200px;
+              width: 8.3333rem;
               margin: 0 0.4167rem 0.4167rem 0.4167rem;
               &:nth-child(6n),
               &:first-child {
@@ -344,6 +344,10 @@ export default {
               height: 75px;
               border-radius: 0.1667rem;
               overflow: hidden;
+              .play{
+                width: .8333rem;
+                height: .8333rem;
+              }
               img {
                 width: 100%;
                 height: 100%;
@@ -465,7 +469,7 @@ export default {
             .mv_title {
               padding-top: 10px;
               a {
-                font-size: 0.5833rem;
+                font-size: 14px;
                 color: #d0d0d0;
               }
             }
@@ -475,7 +479,7 @@ export default {
                 color: #7c5d5d;
               }
               a {
-                font-size: 0.5833rem;
+                font-size: 14px;
                 color: #7c5d5d;
               }
             }

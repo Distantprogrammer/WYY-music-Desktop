@@ -11,13 +11,13 @@ import request from '@/utils/request'
 // 更全
 export const CloudSearch = (params) =>
   request({
-    url: '/cloudsearch ',
+    url: '/cloudsearch',
     params
   })
 // 简约
 export const Search = (params) =>
   request({
-    url: '/search ',
+    url: '/search',
     params
   })
 
@@ -42,15 +42,15 @@ export const DetailSearch = () =>
     url: '/search/hot/detail '
   })
 
-// 搜索建议
+// 搜索建议 问题
 // 说明 : 调用此接口 , 传入搜索关键词可获得搜索建议 , 搜索结果同时包含单曲 , 歌手 , 歌单信息
 export const SuggestSearch = (params) =>
   request({
-    url: '/search/suggest ',
+    url: '/search/suggest',
     params
   })
 
-// 搜索多重匹配
+// 搜索多重匹配  失效
 // 说明 : 调用此接口 , 传入搜索关键词可获得搜索结果
 export const MultimatchSearch = (params) =>
   request({

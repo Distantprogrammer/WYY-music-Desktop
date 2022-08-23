@@ -21,14 +21,22 @@
         <div class="search_box">
           <div class="search_btn"><i class="iconfont">&#xe600;</i></div>
           <!-- 搜索按钮 -->
-
-          <input type="text" class="search_input iconfont" placeholder="搜索" @blur="searchBox=false" @focus="searchBox=true" @input="searchShow=!searchShow"/>
+          <input
+            type="text"
+            class="search_input iconfont"
+            v-model="searchValue"
+            placeholder="搜索"
+            @blur="searchBox=false"
+            @focus="searchBox=true"
+            @input="searchShowFn"
+          />
           <!-- 搜索子路由显示 -->
           <div class="search_show" v-if="searchBox">
             <!-- 搜索历史 -->
-            <searchHistory v-if="searchShow"/>
+            <searchHistory v-if="searchShow" />
             <!-- 搜索建议 -->
-            <searchSuggestion v-else/>
+            <!-- v-else -->
+            <searchSuggestion v-else :searchValue="searchValue" />
           </div>
 
           <div class="search_voice"><i class="iconfont">&#xe647;</i></div>
@@ -85,13 +93,23 @@ export default {
   name: 'HeaderIndex',
   data () {
     return {
-      searchBox: false, // 搜索界面的大盒子
-      searchShow: true // 搜索历史与搜索建议显示隐藏
+      searchBox: true, // 搜索界面的大盒子
+      searchShow: true, // 搜索历史与搜索建议显示隐藏
+      searchValue: '' // 搜索内容
     }
   },
   components: {
     searchHistory,
     searchSuggestion
+  },
+  methods: {
+    searchShowFn () {
+      if (this.searchValue.trim().length > 0) {
+        this.searchShow = false
+      } else {
+        this.searchShow = true
+      }
+    }
   }
 }
 </script>
@@ -189,7 +207,7 @@ export default {
       }
       .search_input {
         color: #696b6b;
-        font-size: 0.667rem;
+        font-size: 0.867rem;
         width: 7.5rem;
         height: 1.458rem;
         background-color: #2a2a2d;
@@ -205,13 +223,13 @@ export default {
         // 所以需要吧父亲的层级提高
         top: 110%;
         left: -37%;
-        width: 14.75rem;
+        width: 17.75rem;
         min-width: 254px;
         max-height: 700px;
         min-height: 400px;
         height: 29.1667rem;
-        padding: 10px 20px;
-        border-radius: 10px;
+        padding: 0.4167rem 0.8333rem;
+        border-radius: 0.4167rem;
         background-color: #363636;
         // 到格式化父盒子里使用样式
         /deep/ .van-cell {
@@ -235,13 +253,13 @@ export default {
         }
         &::-webkit-scrollbar {
           /*滚动条整体样式*/
-          width: 5px;
+          width: 0.2083rem;
           /*高宽分别对应横竖滚动条的尺寸*/
           // height: 5px;
         }
         &::-webkit-scrollbar-thumb {
           /*滚动条里面小方块*/
-          border-radius: 10px;
+          border-radius: 0.4167rem;
           // box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
           background: #e2dcdc;
         }

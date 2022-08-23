@@ -10,7 +10,7 @@
     <!-- 历史记录 -->
     <div class="history_list">
       <span>海阔天空</span>
-      <span>海阔大青蛙大青蛙大全天空</span>
+      <span>海阔大青蛙</span>
       <span>海阔天空</span>
       <span>海阔天空</span>
       <span>海阔天好歹是个大十大空</span>
@@ -65,7 +65,6 @@ export default {
         data: { data }
       } = await DetailSearchAPI()
       this.DetailSearch = data
-      console.log(data)
     }
   }
 }
@@ -76,14 +75,14 @@ export default {
   .history_list {
     display: flex;
     flex-wrap: wrap;
-    padding: 10px 0;
+    padding: .4167rem 0;
     span {
-      margin: 0 10px 10px 0;
+      margin: 0 .4167rem .4167rem 0;
       display: block;
       border: 1px solid #ccc;
-      padding: 5px 15px;
-      border-radius: 20px;
-      font-size: 12px;
+      padding: .2083rem .625rem;
+      border-radius: .8333rem;
+      font-size: .6667rem;
     }
   }
   // 标题
@@ -95,11 +94,11 @@ export default {
     // 数据
     .host_search_list {
       ul {
-        margin-top: 20px;
+        margin-top: .8333rem;
         li {
           display: flex;
           align-items: center;
-          padding: 10px 0;
+          padding: .4167rem 0;
           &:nth-child(-n + 3) {
             .host_search_number {
               span {
@@ -109,30 +108,32 @@ export default {
           }
           .host_search_number {
             span {
-              font-size: 16px;
+              font-size: .6667rem;
               color: rgb(175, 141, 141);
             }
           }
           .host_search_msg {
             display: flex;
             flex-direction: column;
-            margin-left: 24px;
+            margin-left: 1rem;
             div {
               color: #d6d6d6;
               .host_search_name {
+                  font-size: .6667rem;
                 span {
+                  font-size: .5833rem;
                   // display: block;
                   color: red;
-                  margin-left: 10px;
+                  margin-left: .4167rem;
                   img {
                     // width: 14px;s
-                    height: 14px;
+                    height: .6667rem;
                   }
                 }
               }
               .host_search_quantity {
                 color: #69696b;
-                margin-left: 10px;
+                margin-left: .4167rem;
               }
             }
             .introduce {

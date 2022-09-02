@@ -13,27 +13,37 @@
           <span class="history_back" @click="$router.back()"
             ><i class="iconfont">&#xe685;</i></span
           >
-          <span class="history_next" @click="$router.go()"
+          <span class="history_next" @click="$router.go(1)"
             ><i class="iconfont">&#xe688;</i></span
           >
         </div>
         <!-- 搜索模块 -->
-        <div class="search_box">
-          <div class="search_btn"><i class="iconfont">&#xe600;</i></div>
+        <div class="search_box" ref="search_box">
+          <div
+            class="search_btn"
+            @click="defaultSearchFn"
+          >
+            <i class="iconfont">&#xe600;</i>
+          </div>
           <!-- 搜索按钮 -->
           <input
             type="text"
             class="search_input iconfont"
             v-model="searchValue"
-            placeholder="搜索"
-            @blur="searchBox=false"
-            @focus="searchBox=true"
+            :placeholder="defaultSearch.realkeyword"
+            @focus="searchBox = true"
             @input="searchShowFn"
+            @keyup.enter="SubmitFn"
+            @keyup.esc="deleteValueFn(), searchShowFn()"
           />
           <!-- 搜索子路由显示 -->
           <div class="search_show" v-if="searchBox">
             <!-- 搜索历史 -->
-            <searchHistory v-if="searchShow" />
+            <searchHistory
+              v-if="searchShow"
+              :searchHistories="searchHistories"
+              @inputSearch="inputSearch"
+            />
             <!-- 搜索建议 -->
             <!-- v-else -->
             <searchSuggestion v-else :searchValue="searchValue" />
@@ -86,6 +96,8 @@
 </template>
 
 <script>
+import { DefaultSearchAPI } from '@/api'
+import { setItem } from '@/utils/storage'
 // 导入搜索子组件
 import searchHistory from './components/search-history.vue'
 import searchSuggestion from './components/search-suggestion.vue'
@@ -93,22 +105,70 @@ export default {
   name: 'HeaderIndex',
   data () {
     return {
-      searchBox: true, // 搜索界面的大盒子
+      searchValue: '', // 搜索内容
+      searchBox: null, // 搜索界面的大盒子
       searchShow: true, // 搜索历史与搜索建议显示隐藏
-      searchValue: '' // 搜索内容
+      searchHistories: [], // 存储历史记录
+      defaultSearch: '' // 默认搜索建议
     }
   },
   components: {
     searchHistory,
     searchSuggestion
   },
+  async created () {
+    this.onDefaultSearch()
+    const {
+      data: { data }
+    } = await DefaultSearchAPI()
+    this.defaultSearch = data
+  },
+  mounted () {
+    // 点击空白区域关闭盒子
+    document.addEventListener('click', (e) => {
+      if (this.$refs.search_box) {
+        if (!this.$refs.search_box.contains(e.target)) {
+          this.searchBox = false
+        }
+      }
+    })
+  },
   methods: {
+    // 控制盒子显示隐藏
     searchShowFn () {
       if (this.searchValue.trim().length > 0) {
         this.searchShow = false
       } else {
         this.searchShow = true
       }
+    },
+    deleteValueFn () {
+      this.searchValue = ''
+    },
+    // 搜索提交处理
+    SubmitFn () {
+      this.searchHistories.unshift(this.searchValue)
+      const arr = this.searchHistories
+      setItem('searchHistories', arr)
+    },
+    // 搜索历史传值
+    inputSearch (item) {
+      this.searchValue = item
+      this.searchShowFn()
+    },
+    // 默认搜索跳转
+    defaultSearchFn () {
+      this.searchValue = this.defaultSearch.realkeyword
+      this.$router.push({ path: '/search', query: { value: `${this.searchValue}` } })
+    },
+    // 2分钟调用一次默认搜索建议
+    onDefaultSearch () {
+      setInterval(async () => {
+        const {
+          data: { data }
+        } = await DefaultSearchAPI()
+        this.defaultSearch = data
+      }, 120000)
     }
   }
 }

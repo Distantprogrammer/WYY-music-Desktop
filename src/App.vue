@@ -1,12 +1,12 @@
 <template>
   <div id="app">
-    <Home></Home>
-    <!-- <router-view/> -->
+     <!-- 一级路由 -->
+    <router-view />
   </div>
 </template>
 
 <script>
-import Home from '@/views/Home/Home.vue'
+// import Header from '@/views/Header/index.vue'
 export default {
   name: 'App',
   mounted () {
@@ -25,10 +25,8 @@ export default {
     }
     setFont()
     window.addEventListener('resize', setFont)
-  },
-  components: {
-    Home
   }
+
 }
 </script>
 <style lang="less"></style>

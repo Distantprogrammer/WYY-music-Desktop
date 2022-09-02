@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <Header></Header>
-    <Main></Main>
+      <Main></Main>
     <Footer></Footer>
   </div>
 </template>
@@ -13,9 +13,9 @@ import Main from '@/views/Main/index.vue'
 export default {
   name: 'Home',
   components: {
-    Header,
     Footer,
-    Main
+    Main,
+    Header
   }
 }
 </script>

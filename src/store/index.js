@@ -13,11 +13,16 @@ export default new Vuex.Store({
   },
   getters: {},
   mutations: {
-    getIdMusic (state, paylond) {
-      state.playMusicMsg = paylond
-      setItem(PLAYMUSIC, paylond)
+    getIdMusic (state, id) {
+      console.log(33, id)
+      state.playMusicMsg = id
+      setItem(PLAYMUSIC, id)
     }
   },
-  actions: {},
+  actions: {
+    getIdMusic (context, id) {
+      context.commit('getIdMusic', id)
+    }
+  },
   modules: {}
 })

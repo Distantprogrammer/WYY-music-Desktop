@@ -6,11 +6,13 @@
         <span slot="title">猜你想搜</span>
       </van-cell>
       <div class="search_result">
+        <router-link :to="{ path: '/search', query:{value:searchValue} }">
         <van-cell
           :title="obj.name"
           v-for="(obj, index) in supposeSearch"
           :key="index"
         />
+        </router-link>
       </div>
     </div>
     <!-- 单曲 -->
@@ -73,6 +75,7 @@
 </template>
 
 <script>
+import { debounce } from 'lodash'
 import { SuggestSearchAPI, CloudSearchAPI } from '@/api'
 export default {
   name: 'searchSuggestion',
@@ -95,16 +98,12 @@ export default {
     }
   },
   watch: {
-    deep: true,
-    searchValue () {
-      // console.log(111)
-      clearTimeout(this.time)
-      this.time = setTimeout(() => {
+    searchValue: {
+      handler: debounce(function () {
         this.onsearch()
-      }, 500)
-      // console.log(this.searchValue)
-    },
-    immediate: true
+      }, 300),
+      immediate: true // 立即侦听
+    }
   },
   methods: {
     async onsearch () {
@@ -123,25 +122,21 @@ export default {
         // 有 songs ？
         const ifsongs = {}.propertyIsEnumerable.call(result, 'songs')
         if (ifsongs) {
-          console.log(11)
           this.oneSearchList = result.songs
         }
         // 有 artists ？  // 歌手
         const ifartists = {}.propertyIsEnumerable.call(result, 'artists')
         if (ifartists) {
-          console.log(222)
           this.singesSearchList = result.artists
         }
         // 有 albums ？
         const ifalbums = {}.propertyIsEnumerable.call(result, 'albums')
         if (ifalbums) {
-          console.log(333)
           this.albumSearchList = result.albums
         }
         // 有 playlists ？ // 歌单
         const ifplaylists = {}.propertyIsEnumerable.call(result, 'playlists')
         if (ifplaylists) {
-          console.log(44)
           this.searchSongList = result.playlists
         }
       } catch (error) {}

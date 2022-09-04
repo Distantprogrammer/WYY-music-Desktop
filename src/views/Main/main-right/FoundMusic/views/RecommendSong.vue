@@ -147,6 +147,7 @@ import {
   RecommendedMVAPI
 } from '@/api/index'
 
+import playFn from '@/utils/play'
 import Playbtn from '@/components/playBtn.vue'
 // import { mapMutations } from 'vuex'
 export default {
@@ -224,9 +225,10 @@ export default {
         console.log(error)
       }
     },
-    playFn (id) {
-      console.log(12, id)
-      this.$store.dispatch('getIdMusic', id)
+    playFn (data) {
+      playFn(data)
+      // console.log(12, id)
+      // this.$store.commit('delIdMusic')
     }
   }
 }

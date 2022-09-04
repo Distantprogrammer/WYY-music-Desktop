@@ -1,7 +1,8 @@
 import axios from 'axios'
 
 const request = axios.create({
-  baseURL: 'http://localhost:3000/'
+  baseURL: 'http://192.168.21.30:3000/'
+  // baseURL: 'https://netease-cloud-music-qjeb3lhyv-namesarerepeated.vercel.app'
   // baseURL: 'http://192.168.21.52:3000/' // 备用接口
 })
 

@@ -4,15 +4,17 @@
     <div class="wyy_foot">
       <!-- 歌词 -->
       <footerLyric
-       v-if="true"
-      :scrollAmount="scrollAmount"
-      :scrollDelay="scrollDelay"
-      :curLyric ='curLyric'
+        v-if="lyricShow"
+        :scrollAmount="scrollAmount"
+        :scrollDelay="scrollDelay"
+        :curLyric="curLyric"
+        :playState="playState"
+        @close="lyricShow = false"
       />
       <div class="details">
         <!-- 音乐图像 -->
         <div class="icon">
-          <div class="modal"><i class="iconfont">&#xe687;</i></div>
+          <div class="modal"><i class="iconfont icon-aixin"></i></div>
           <img v-if="imgShow" :src="songInfo.al.picUrl" alt="展示音乐详情页" />
         </div>
         <!-- 音乐名 作者 -->
@@ -35,15 +37,15 @@
       <!-- 播放设置 -->
       <div class="player" ref="player">
         <ul>
-          <li class=""><i class="iconfont">&#xe6b4;</i></li>
-          <li class=""><i class="iconfont">&#xe7ef;</i></li>
+          <li class=""><i class="iconfont icon-shunxubofang"></i></li>
+          <li class="" @click="endedFn(-1)"><i class="iconfont icon-shangyishou"></i></li>
           <li class="paly" ref="paly" @click.stop="audioStart">
             <!-- 怎样实现其他页面点击播放，切换播放按钮图标
 1.监听器是否可以？
 2.使用vuex传值过来激活？ -->
             <i class="iconfont">{{ playState ? '&#xe6de;' : '&#xe7c5;' }}</i>
           </li>
-          <li class=""><i class="iconfont">&#xe7ef;</i></li>
+          <li class="" @click="endedFn(+1)"><i class="iconfont icon-xiayishou"></i></li>
           <li
             class="word"
             @click="lyricShowFn"
@@ -71,10 +73,11 @@
       看接口文档: 音乐地址需要带id去获取(但是有的歌曲可能404)
       https://binaryify.github.io/NeteaseCloudMusicApi/#/?id=%e8%8e%b7%e5%8f%96%e9%9f%b3%e4%b9%90-url
      -->
+        <!-- @ended="endedFn" 播放结束事件 -->
         <!-- loadedmetadata事件为音频/视频文件加载完数据后触发 duration 获取音频的时长，单位为s -->
         <!-- timeupdate 事件是在播放位置改变时触发 currentTime 获得当前播放时间，一般和timeupdate事件联合使用 -->
         <audio
-
+          @ended="endedFn(+1)"
           @loadedmetadata="setTimeFn($event.srcElement.duration)"
           @timeupdate="timeupdateFn($event.srcElement.currentTime)"
           ref="audio"
@@ -86,10 +89,10 @@
       <div class="acoustics">
         <ul>
           <li class="quality">标准</li>
-          <li class="soundEffects"><i class="iconfont">&#xe6b4;</i></li>
-          <li class="sound"><i class="iconfont">&#xe6b4;</i></li>
-          <li class="share"><i class="iconfont">&#xe6b4;</i></li>
-          <li class="playlist"><i class="iconfont">&#xe6b4;</i></li>
+          <li class="soundEffects"><i class="iconfont icon-ziyuanldpi"></i></li>
+          <li class="sound"><i class="iconfont" :class="voiceOnOff ? 'icon-shengyinkai' : 'icon-shengyinguan'"></i></li>
+          <li class="share"><i class="iconfont icon-yiqipindan"></i></li>
+          <li class="playlist"><i class="iconfont icon-24gf-playlist"></i></li>
         </ul>
       </div>
     </div>
@@ -121,16 +124,24 @@ export default {
       lyricShow: false, // 歌词显示隐藏
       x: 0, // 歌词的x
       y: 0, // 歌词的y
-      scrollAmount: '0', // 滚动速度
+      scrollAmount: '0', // 滚动速度 // 算法有问题 // 不写 9-02
       scrollDelay: '0', // 停顿时间
-      lyricArrSort: []
+      lyricArrSort: [], // 歌词时间差排序的
+      // playTable: []// 播放歌单列表
+      voiceOnOff: true // 声音开关图标
     }
   },
   components: {
     footerLyric
   },
   computed: {
-    ...mapState(['playMusicMsg'])
+    // 获取歌曲列表信息
+    ...mapState(['PLAYMUSICLISTMSG', 'playListMusic', 'playOneMusic']),
+    // ...mapGetters(['playListMusic']),
+    playTable () {
+      return [...this.playListMusic]
+    }
+    // playListMusic
   },
   created () {
     this.firstPlay = false
@@ -149,42 +160,92 @@ export default {
     }
   },
   watch: {
-    '$store.state.playMusicMsg': {
-      deep: true,
-      handler () {
-        this.playState = false // 数据过来改变播放按钮状态
-        // candisliek  不喜欢  name 歌曲名字  id 歌曲id //播放要传入的id  picUrl // 歌曲图片  song // 歌曲信息
-        /**
-         * album 唱片
-         * alias 别名
-         * alartists 艺术家
-         */
-        // const { candisliek, id, name, picUrl, song } = playMusicMsg
-        // this.musicMsg = playMusicMsg
-        // console.log(this.params)
-        // this.candisliek = candisliek
-        // this.name = name
-        // this.picUrl = picUrl
-        // this.song = song
-        // this.id = id
-        // console.log(this.firstPlay)
-        if (this.playMusicMsg) {
-          this.id = this.playMusicMsg
-        }
+    // '$store.state.playMusicMsg': {
+    //   deep: true,
+    //   handler () {
+    //     this.playState = false // 数据过来改变播放按钮状态
+    //     // candisliek  不喜欢  name 歌曲名字  id 歌曲id //播放要传入的id  picUrl // 歌曲图片  song // 歌曲信息
+    //     /**
+    //      * album 唱片
+    //      * alias 别名
+    //      * alartists 艺术家
+    //      */
+    //     // const { candisliek, id, name, picUrl, song } = playMusicMsg
+    //     // this.musicMsg = playMusicMsg
+    //     // console.log(this.params)
+    //     // this.candisliek = candisliek
+    //     // this.name = name
+    //     // this.picUrl = picUrl
+    //     // this.song = song
+    //     // this.id = id
+    //     // console.log(this.firstPlay)
+    //     if (this.playMusicMsg) {
+    //       this.id = this.playMusicMsg
+    //     }
 
-        this.getSong()
+    //     this.getSong()
+    //     this.showLyric()
+    //   }
+    // immediate: true
+    // }
+    // 监听单曲的数据
+    playOneMusic: {
+      deep: true,
+      async handler () {
+        // 判断当前是否有播放列表
+        if (this.playListMusic.length) {
+          // 获得当前播放的歌曲索引
+          const index = this.playTable.indexOf(this.id)
+          console.log('index', index)
+          // 判断当前列表是否有此数据
+          if (this.playTable.indexOf(this.playOneMusic) > -1) {
+            // 删除以前的数据
+            this.playTable.splice(this.playTable.indexOf(this.playOneMusic), 1)
+          }
+          // 把单曲追加到总体播放列表中
+          this.playTable.splice(index + 1, 0, this.playOneMusic)
+
+          await this.getSong(this.playTable[index + 1])
+        } else {
+          // 判断当前列表是否有此数据
+          if (this.playTable.indexOf(this.playOneMusic) > -1) {
+            // 删除以前的数据
+            this.playTable.splice(this.playTable.indexOf(this.playOneMusic), 1)
+          }
+          // 数据追加到最后
+          this.playTable.push(this.playOneMusic)
+          await this.getSong(this.playTable[this.playTable.indexOf(this.playOneMusic)])
+        }
+        // 使用await强制待
+        // await this.getSong(this.id)
+        this.showLyric()
+        this.playState = false // 数据过来改变播放按钮状态/
+        this.audioStart()
+      }
+    },
+    // 监听播放列表的数据
+    playListMusic: {
+      deep: true,
+      async handler () {
+        // 新的播放列表传过来从第一个开始
+        await this.getSong(this.playTable[0])
+        this.playState = false // 数据过来改变播放按钮状态
+        this.audioStart()
         this.showLyric()
       }
-      // immediate: true
     }
   },
   mounted () {
     this.showLyric()
   },
   methods: {
-    async getSong () {
+    async getSong (id) {
+      // if (condition) {
+      // }
       // 获取歌曲详情, 和歌词方法
-      const res = await getSongByIdAPI(this.id)
+      const res = await getSongByIdAPI(id)
+      // 把id赋值给this.id
+      this.id = id
       // console.log(res)
       this.songInfo = res.data.songs[0]
       setItem('songInfo', res.data.songs[0])
@@ -275,7 +336,9 @@ export default {
       this.currentTime = currentTime
       this.$nextTick(() => {
         const value = Math.round(
-          (Math.floor(currentTime) / Math.floor(this.totalTime)) * 100, 0) // 当前时间/总长 再乘以一个100变成百分数
+          (Math.floor(currentTime) / Math.floor(this.totalTime)) * 100,
+          0
+        ) // 当前时间/总长 再乘以一个100变成百分数
         this.progressBarWidth = value // 使用style添加width
         const progressBar = this.$refs.progressBar_background
         progressBar.style.width = value + '%'
@@ -316,7 +379,46 @@ export default {
     },
     lyricShowFn () {
       this.lyricShow = !this.lyricShow
+    },
+    // 播放切换
+    async endedFn (num) {
+      if (num > 0) {
+        // // 判断上一曲没了
+      // 播放下一曲
+      // 判断当前播放的歌曲到最后一首了 如果再加1的话会超出数组，既然到了最后一首，那么肯定下一首就是第一首
+        if (this.playTable.indexOf(this.id) === this.playTable.length - 1) {
+          await this.getSong(this.playTable[this.playTable.indexOf(this.id) - this.playTable.length + 1])
+        } else {
+        // 没到最后一直加一
+          await this.getSong(this.playTable[this.playTable.indexOf(this.id) + num])
+        }
+      } else if (num < 0) {
+        // 如果当前播放的歌曲是第一个，那么减一就会报错，使用数组方法slice获取数组末尾的数据
+        if (this.playTable.indexOf(this.id) - -num < 0) {
+        // 倒序
+        // slice会返回一个数组 给它展开
+          await this.getSong(...this.playTable.slice(this.playTable.indexOf(this.id) - -num))
+        // }
+        } else {
+        // 没到第一一直减一
+          await this.getSong(this.playTable[this.playTable.indexOf(this.id) - -num])
+        }
+      } else {
+        this.getSong(1959667345)
+      }
     }
+    // async startFn (num) {
+    //   // 如果当前播放的歌曲是第一个，那么减一就会报错，使用数组方法slice获取数组末尾的数据
+    //   if (this.playTable.indexOf(this.id) - num < 0) {
+    //     // 倒序
+    //     // slice会返回一个数组 给它展开
+    //     await this.getSong(...this.playTable.slice(this.playTable.indexOf(this.id) - num))
+    //     // }
+    //   } else {
+    //     // 没到第一一直减一
+    //     await this.getSong(this.playTable[this.playTable.indexOf(this.id) - num])
+    //   }
+    // }
     // 过滤器 现在还没用
     // transTime (time) {
     //   const duration = parseInt(time)

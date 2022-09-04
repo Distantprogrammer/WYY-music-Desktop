@@ -17,6 +17,6 @@ Vue.filter('secondeTime', (value) => {
   return dayjs(Number(value)).format('mm:ss')
 })
 
-// Vue.filter('monthTime', (value, format) => {
-//   return dayjs(value).format(format)
-// })
+Vue.filter('monthTime', (value, format) => {
+  return dayjs(value).format(format)
+})

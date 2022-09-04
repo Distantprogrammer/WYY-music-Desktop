@@ -24,7 +24,7 @@
         </tr>
       </thead>
       <tbody class="search_single_list">
-        <tr v-for="(obj, index) in singleMsg" :key="obj.id" @dblclick="play(obj.id)">
+        <tr v-for="(obj, index) in singleMsg" :key="obj.id" @dblclick="play(singleMsg)">
           <td>
             {{ (index+1) > 9 ? (index+1) : '0' + (index+1) }}
             <i class="iconfont icon-xihuan"></i>
@@ -91,7 +91,7 @@ export default {
         const res = await CloudSearchAPI({
           keywords: this.$route.query.value,
           offset: this.offset,
-          limit: 30,
+          limit: 5,
           type: 1
         })
         // console.log(res)
@@ -136,8 +136,8 @@ export default {
         }, 200)
       }
     },
-    play (id) {
-      playFn(id)
+    play (list) {
+      playFn(list)
     }
   }
 }

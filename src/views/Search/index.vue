@@ -46,7 +46,7 @@ export default {
   },
   created () {
     // 组件创建完后获取数据，
-    // 此时 data 已经被 observed 了
+    // 此时 data 已经被 observed 了 （observed意思注意到了）
     this.fetchData()
     console.log()
   },
@@ -70,6 +70,7 @@ export default {
         // console.log(this.listTop)
       }
       if (this.$listTop >= $listTop) return
+      // 父组件触发事件同时触发子组件事件
       this.$refs.child.handleScroll(Boell)
     }
   }

@@ -47,7 +47,6 @@
               <div class="podcast_img position_relative" @click="playFn(obj.id)">
                 <Playbtn
                   class="play"
-                  :classAcitve="{ fontSize: '1em' }"
                 ></Playbtn>
                 <img :src="obj.picUrl" alt="" />
               </div>
@@ -360,6 +359,7 @@ export default {
             height: 75px;
             border-radius: 0.1667rem;
             overflow: hidden;
+            font-size: .25rem;
             .play {
               width: 0.8333rem;
               height: 0.8333rem;

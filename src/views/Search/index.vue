@@ -8,7 +8,7 @@
     </div>
     <div class="search_nav">
       <ul class="clearfix">
-        <li><router-link :to="{ path: '/searchSingle' }">单曲 <b></b></router-link></li>
+        <li><router-link :to="{ path: `/searchSingle/?value=${searchValue}` }">单曲 <b></b></router-link></li>
         <li><router-link :to="{ path: '/searchSingle' }">歌手 <b></b></router-link></li>
         <li><router-link :to="{ path: '/searchSingle' }">专辑 <b></b></router-link></li>
         <li><router-link :to="{ path: '/searchSingle' }">视频 <b></b></router-link></li>

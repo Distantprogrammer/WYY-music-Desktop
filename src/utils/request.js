@@ -1,7 +1,10 @@
 import axios from 'axios'
 
 const request = axios.create({
-  baseURL: 'http://192.168.21.30:3000/'
+  // baseURL: process.env.VUE_APP_BASE_API, // 根据开发环境还是生产环境更改基准地址
+  timeout: 5000, // 超时时间
+  // baseURL: 'http://192.168.21.30:3000/'
+  baseURL: 'http://localhost:3000/'
   // baseURL: 'https://netease-cloud-music-qjeb3lhyv-namesarerepeated.vercel.app'
   // baseURL: 'http://192.168.21.52:3000/' // 备用接口
 })

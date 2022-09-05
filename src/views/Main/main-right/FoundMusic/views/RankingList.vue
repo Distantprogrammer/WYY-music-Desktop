@@ -1,7 +1,7 @@
 <template>
   <div class="rankingList">
     <!-- 官方榜 -->
-    <div class="official_list">
+    <div class="official_list" v-if=" official_list">
       <h3 class="public_title">
         官方榜
         <!-- <i class="iconfont icon-arrow-right-bold arrow_right"></i> -->
@@ -21,22 +21,23 @@
         </div>
         <div class="portion_title">
           <ul>
-            <li class="clearfix">
+            <!-- 这里使用了双重for循环 -->
+            <li class="clearfix" v-for="(obj,i) in 5" :key="i" @dblclick="playFn()">
+              <!-- <div>{{ i }}</div> -->
               <div class="portion_titlt_box">
-                <span class="if_bigthree">1</span>
-                <span class="else_smthree">5431%</span>
+                <span class="if_bigthree">{{ i+1}}</span>
+                <span class="else_smthree" v-if="officialTracks[index].ToplistType==='S'">{{ officialTracks[index].trackIds[i].ratio}}%</span>
+                <span class="else_smthree" style="color:red; font-size: 5px;" v-if="officialTracks[index].ToplistType==='O'">NEW</span>
+                <span class="else_smthree" v-if="officialTracks[index].ToplistType==='N'">-</span>
+                <span class="else_smthree" v-if="officialTracks[index].ToplistType==='H'">-</span>
                 <span style="color: #ddd"
-                  >起风了<span class="else_smthree"
-                    >(永结无间主题曲时间比较阿萨苏打水大会上的哈)</span
+                  >{{officialTracks[index].tracks[i].name}} &nbsp;<span v-if="officialTracks[index].tracks[i].alia[0]" class="else_smthree"
+                    >({{ officialTracks[index].tracks[i].alia[0] }})</span
                   >
                 </span>
-                <span class="title_rigth">歌手</span>
+                <span class="title_rigth">{{officialTracks[index].tracks[i].ar[0].name}}</span>
               </div>
             </li>
-            <li>2</li>
-            <li>3</li>
-            <li>4</li>
-            <li>5</li>
             <li>
               查看全部
               <i class="iconfont icon-arrow-right-bold arrow_right"></i>
@@ -50,7 +51,7 @@
       <div class="host_list"></div>
     </div>
     <!-- 全球榜 -->
-    <div class="global_list">
+    <div class="global_list" v-if="global_list">
       <h3 class="public_title">
         全球榜
         <!-- <i class="iconfont icon-arrow-right-bold arrow_right"></i> -->
@@ -71,27 +72,99 @@
 </template>
 
 <script>
-import { RankingListAPI } from '@/api'
+import { RankingListAPI, SongListDetailsAPI } from '@/api'
 import Playbtn from '@/components/playBtn.vue'
+import playFn from '@/utils/play'
 export default {
   name: 'RankingList',
   data () {
     return {
       official_list: [], // 官方
-      global_list: [] // 全球
+      global_list: [], // 全球
+      officialTracks: [
+        // // eslint-disable-next-line no-undef
+        // soaringTracks, // 飙升榜
+        // // eslint-disable-next-line no-undef
+        // newSongTracks, // 新歌榜
+        // // eslint-disable-next-line no-undef
+        // originalTracks, // 原创
+        // // eslint-disable-next-line no-undef
+        // hostSongTracks // 热歌榜
+      ]
     }
   },
   created () {
     this.getRankingList() // 排行榜
   },
   methods: {
+    // 排行榜
     async getRankingList () {
       const {
         data: { list }
       } = await RankingListAPI()
+      // 官方排行榜
       this.official_list = list.slice(0, 4) // 截取数组
+      // 全球排行榜
       this.global_list = list.slice(4)
+      this.getSongListDetails()
+    },
+    // 排行榜详情
+    async getSongListDetails () {
+      { const res = await SongListDetailsAPI({
+        id: this.official_list[0].id
+      })
+      const { data: { playlist } } = res
+      this.officialTracks.push(playlist) }
+
+      { const res = await SongListDetailsAPI({
+        id: this.official_list[1].id
+      })
+      const { data: { playlist } } = res
+      this.officialTracks.push(playlist) }
+
+      { const res = await SongListDetailsAPI({
+        id: this.official_list[2].id
+      })
+      const { data: { playlist } } = res
+      this.officialTracks.push(playlist) }
+
+      { const res = await SongListDetailsAPI({
+        id: this.official_list[3].id
+      })
+      const { data: { playlist } } = res
+      this.officialTracks.push(playlist) }
+      // this.official_list.forEach(async (item, i) => {
+      //   const res = await SongListDetailsAPI({
+      //     id: this.official_list[i].id
+      //   })
+      //   const { data: { playlist } } = res
+      //   this.officialTracks.push(playlist)
+      // })
+      // for (let i = 0; i < this.official_list.length; i++) {
+      //   const res = await SongListDetailsAPI({
+      //     id: this.official_list[i].id
+      //   })
+      //   const { data: { playlist } } = res
+      //   if (i === 0) {
+      //     // 飙升榜
+      //     this.soaringTracks = playlist
+      //   } else if (i === 1) {
+      //     // 新歌榜
+      //     this.newSongTracks = playlist
+      //   } else if (i === 2) {
+      //     // 原创
+      //     this.originalTracks = playlist
+      //   } else {
+      //     // 热歌榜
+      //     this.hostSongTracks = playlist
+      //   }
+      // }
+    },
+    playFn (data) {
+      playFn(data)
+      console.log(this.officialTracks[0])
     }
+
   },
   components: {
     Playbtn
@@ -202,6 +275,7 @@ export default {
       li {
         flex: 16.6666%;
         margin: 0 0.4167rem 0.4167rem 0;
+        font-size: .4167rem;
         .global_img {
           position: relative;
           max-width: 210px;
@@ -213,7 +287,7 @@ export default {
           border-radius: 0.2083rem;
           overflow: hidden;
           .playBtn {
-            opacity: 0;
+            opacity: 1;
             position: absolute;
             bottom: 6%;
             right: 6%;

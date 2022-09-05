@@ -91,7 +91,7 @@ export default {
         const res = await CloudSearchAPI({
           keywords: this.$route.query.value,
           offset: this.offset,
-          limit: 5,
+          limit: 30,
           type: 1
         })
         // console.log(res)

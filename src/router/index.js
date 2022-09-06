@@ -86,9 +86,15 @@ const routes = [
           {
             path: '/searchSingle',
             // name: 'searchSingle',
-            component: () => import('@/views/Search/single/index.vue')
+            // component: () => import('@/views/Search/single/index.vue')
+            component: () => import('@/views/Search/index.vue')
           }
         ]
+      },
+      {
+        path: '/songListDeta', // 歌单详情
+        name: 'songListDeta',
+        component: () => import('@/views/Main/main-right/songListDeta/index.vue')
       },
       {
         path: '/video', // 视频

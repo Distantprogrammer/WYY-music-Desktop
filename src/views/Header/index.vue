@@ -127,6 +127,8 @@ export default {
     // 点击空白区域关闭盒子
     document.addEventListener('click', (e) => {
       if (this.$refs.search_box) {
+        // contains 包含
+        // search_box是否包含在document中
         if (!this.$refs.search_box.contains(e.target)) {
           this.searchBox = false
         }

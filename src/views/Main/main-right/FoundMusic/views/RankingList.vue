@@ -1,5 +1,11 @@
 <template>
-  <div class="rankingList">
+  <div class="rankingList"
+  v-loading="loading"
+    element-loading-text="拼命加载中"
+    element-loading-spinner="el-icon-loading"
+    element-loading-background="rgba(0, 0, 0, 0.8)"
+    :data="tableData"
+   >
     <!-- 官方榜 -->
     <div class="official_list" v-if=" official_list && soaringTracks">
       <h3 class="public_title">
@@ -12,7 +18,7 @@
         v-for="(obj, index) in official_list"
         :key="index"
       >
-        <div class="portion_img">
+        <div class="portion_img" @click="$router.push({path:'/songListDeta'})">
           <Playbtn class="playBtn" />
           <span class="updateTime"
             >{{ obj.updateTime | monthTime('MM月DD日') }}更新</span
@@ -59,6 +65,7 @@ export default {
   name: 'RankingList',
   data () {
     return {
+      loading: false, // 加载条
       official_list: [], // 官方
       global_list: [], // 全球
       soaringTracks: { trackIds: [] }, // 飙升榜
@@ -73,6 +80,7 @@ export default {
   methods: {
     // 排行榜
     async getRankingList () {
+      this.loading = true // 开启加载条
       const {
         data: { list }
       } = await RankingListAPI()
@@ -107,6 +115,7 @@ export default {
       })
       const { data: { playlist } } = res
       this.hostSongTracks = playlist }
+      this.loading = false
       // this.official_list.forEach(async (item, i) => {
       //   const res = await SongListDetailsAPI({
       //     id: this.official_list[i].id

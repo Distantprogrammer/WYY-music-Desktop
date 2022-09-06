@@ -3,7 +3,7 @@
 * {
   margin: 0;
   padding: 0;
-  color: #fff;
+  /* color: #fff; */
   /* css3盒子模型 */
   box-sizing: border-box;
   cursor: pointer;

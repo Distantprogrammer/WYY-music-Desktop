@@ -18,6 +18,7 @@ import {
   SuggestSearch,
   MultimatchSearch
 } from './Search'
+import { getSongUrl } from './download'
 /**
  * 个性推荐
  */
@@ -49,3 +50,8 @@ export const HotSearchAPI = HotSearch // 热搜列表(简略)
 export const DetailSearchAPI = DetailSearch // 热搜列表(详细)
 export const SuggestSearchAPI = SuggestSearch // 搜索建议
 export const MultimatchSearchAPI = MultimatchSearch // 搜索多重匹配
+
+/**
+ * 下载
+ */
+export const getSongUrlAPI = getSongUrl// 歌曲url

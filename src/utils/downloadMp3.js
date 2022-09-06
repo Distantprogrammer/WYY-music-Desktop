@@ -1,27 +1,37 @@
-// 绑定的点击事件为down，就举个栗子@click=“down（record）”你懂的。没record就放空就好了
-function down (id) {
-  // 调用downloadMp3函数方法，传一个地址给这个函数，举个栗子：http：//某MP3或者mouMP4文件,如果后台获取的就像我那样子传进去一个视频或者音频地址就行。
-  downloadMp3(`https://music.163.com/song/media/outer/url?id=${id}.mp3`)
-}
-// 下载mp3调用的方法，这边你拷过去就行了，原理是啥的话有人问你就说举个栗子：没有栗子
-// 这边downloadMp3(filePath)的filePath就是点击事件传过来的地址啦。然后他就会下载了。
-function downloadMp3 (filePath) {
-  fetch(filePath).then(res => res.blob()).then(blob => {
-    const a = document.createElement('a')
-    document.body.appendChild(a)
-    a.style.display = 'none'
-    // 使用获取到的blob对象创建的url
-    const url = window.URL.createObjectURL(blob)
-    a.href = url
-    // 指定下载的文件名，就‘’写默认的下载名字。不指定他就根据上传名直接下载了宝。
-    a.download = ''
-    a.click()
-    document.body.removeChild(a)
-    // 移除blob对象的url
-    window.URL.revokeObjectURL(url)
+import axios from 'axios'
+import { getSongUrlAPI } from '@/api'
+export default async function down (id, level = 'standard', downFileName) {
+  // 判断是否下载多个 即id是不是数组
+  if (Object.prototype.toString.call(id) === '[object Array]') {
+    id = id.join(',')
+  }
+  console.log(id)
+  const { data } = await getSongUrlAPI({
+    id: id,
+    level: level
   })
-}
-export default {
-  down,
-  downloadMp3
+  const url = data.data[0].url
+  const downUrl = url // 音乐地址 : 例如: http://m10.music.126.net/20201119111830/51f6bbc51ea067e9d258fa73183b16b1/ymusic/obj/w5zDlMODwrDDiGjCn8Ky/2828582250/29aa/7bcc/f324/6699f160b0c39b010e6e009d271e4948.mp3
+  const fileName = downFileName // 文件名设置: 起风了
+  axios({
+    method: 'get',
+    url: downUrl,
+    responseType: 'blob',
+    headers: { 'content-type': 'audio/mpeg' }
+    // headers: {'content-length': '4066786', 'content-type': 'audio/mpeg'}
+  }).then((res) => {
+    // eslint-disable-next-line no-unused-vars
+    const blobType = 'application/force-download' // 设置blob请求头
+    const blob = new Blob([res.data], { type: res.data.type }) // 创建blob 设置blob文件类型 data 设置为后端返回的文件(例如mp3,jpeg) type:这里设置后端返回的类型 为 mp3
+    const downa = document.createElement('a') // 创建A标签
+    const href = window.URL.createObjectURL(blob) // 创建下载的链接
+    downa.href = href // 下载地址
+    downa.download = fileName // 下载文件名
+    document.body.appendChild(downa)
+    downa.click() // 模拟点击A标签
+    document.body.removeChild(downa) // 下载完成移除元素
+    window.URL.revokeObjectURL(href) // 释放blob对象
+  }).catch(function (error) {
+    console.log(error)
+  })
 }

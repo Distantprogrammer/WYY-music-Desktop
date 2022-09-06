@@ -95,6 +95,7 @@ export default {
   //   background: #4bbe5d;
   // }
   li {
+    color: #fff;
     margin-top: 0.911rem;
     padding: 0.182rem 0rem 0.182rem 0.182rem;
     border-radius: 0.112rem;

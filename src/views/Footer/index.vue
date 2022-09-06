@@ -11,11 +11,11 @@
         :playState="playState"
         @close="lyricShow = false"
       />
-      <div class="details">
+      <div class="details" v-if="imgShow" >
         <!-- 音乐图像 -->
         <div class="icon">
           <div class="modal"><i class="iconfont icon-aixin"></i></div>
-          <img v-if="imgShow" :src="songInfo.al.picUrl" alt="展示音乐详情页" />
+          <img :src="songInfo.al.picUrl" alt="展示音乐详情页" />
         </div>
         <!-- 音乐名 作者 -->
         <div class="song">
@@ -86,7 +86,7 @@
         ></audio>
       </div>
       <!-- 音效 -->
-      <div class="acoustics">
+      <div class="acoustics" v-if="imgShow">
         <ul>
           <li class="quality">标准</li>
           <li class="soundEffects"><i class="iconfont icon-ziyuanldpi"></i></li>
@@ -145,12 +145,12 @@ export default {
   },
   created () {
     this.firstPlay = false
-    const than = this
-    window.onload = () => {
-      if (than.songInfo.al.picUrl) {
-        than.imgShow = true
-      }
-    }
+    // const than = this
+    // window.onload = () => {
+    //   if (than.songInfo.al.picUrl) {
+    //     than.imgShow = true
+    //   }
+    // }
     if (getItem('PLAYMUSICMSG')) {
       this.getSong()
       // this.id = getItem('PLAYMUSICMSG').id
@@ -240,29 +240,30 @@ export default {
   },
   methods: {
     async getSong (id) {
-      // console.log(id)
-      // if (condition) {
-      // }
-      // 获取歌曲详情, 和歌词方法
-      const res = await getSongByIdAPI(id)
-      // 把id赋值给this.id
-      this.id = id
-      // console.log(res)
-      this.songInfo = res.data.songs[0]
-      setItem('songInfo', res.data.songs[0])
-      // 获取-并调用_formatLyr方法, 处理歌词
-      const lyrContent = await getLyricByIdAPI(this.id)
-      // console.log(lyrContent)
-      const lyricStr = lyrContent.data.lrc.lyric
-      this.lyric = this._formatLyr(lyricStr)
-      // 初始化完毕先显示零秒歌词
-      this.curLyric = this.lyric[0]
-      // console.log(this.firstPlay)
-      if (this.firstPlay) {
-        this.$refs.audio.play()
-        this.playState = true
+      try {
+        // 获取歌曲详情, 和歌词方法
+        const res = await getSongByIdAPI(id)
+        // 把id赋值给this.id
+        this.id = id
+        this.imgShow = true
+        // console.log(res)
+        this.songInfo = res.data.songs[0]
+        setItem('songInfo', res.data.songs[0])
+        // 获取-并调用_formatLyr方法, 处理歌词
+        const lyrContent = await getLyricByIdAPI(this.id)
+        // console.log(lyrContent)
+        const lyricStr = lyrContent.data.lrc.lyric
+        this.lyric = this._formatLyr(lyricStr)
+        // 初始化完毕先显示零秒歌词
+        this.curLyric = this.lyric[0]
+        if (this.firstPlay) {
+          this.$refs.audio.play()
+          this.playState = true
+        }
+        this.firstPlay = true
+      } catch (error) {
+        this.$message('稍后重试', error)
       }
-      this.firstPlay = true
     },
     _formatLyr (lyricStr) {
       // 可以看network观察歌词数据是一个大字符串, 进行拆分.
@@ -298,6 +299,7 @@ export default {
         // 如果状态为false
         // this.scrollAmount = '5'
         this.$refs.audio.play() // 调用audio标签的内置方法play可以继续播放声音
+        console.log(this.$refs.audio.src)
       } else {
         // this.scrollAmount = '0'
         this.$refs.audio.pause() // 暂停audio的播放
@@ -325,7 +327,7 @@ export default {
         })
         this.newSongLIst = data.result
       } catch (error) {
-        console.log(error)
+        this.$message('最新音乐获取失败', error)
       }
     },
     // 音乐总时长

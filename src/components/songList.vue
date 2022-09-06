@@ -2,7 +2,7 @@
  <table class="search_single_table">
       <thead>
         <tr>
-          <td></td>
+          <td>操作</td>
           <td>音乐标题</td>
           <td>歌手</td>
           <td>专辑</td>
@@ -17,7 +17,7 @@
             <span> &nbsp;&nbsp;- &nbsp;&nbsp;</span>
             <i class="iconfont icon-xihuan"></i>
             &nbsp;&nbsp;
-            <i class="iconfont icon-xiazai" @click="downloadMp3(obj.id)"></i>
+            <i class="iconfont icon-xiazai" @click="downloadMp3(obj.id,obj.name)"></i>
           </td>
           <td>{{ obj.name }}</td>
           <td>{{ obj.ar[0].name }}</td>
@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import downloadMp3 from '@/utils/downloadMp3'
+import down from '@/utils/downloadMp3'
 import playFn from '@/utils/play'
 export default {
   name: 'songList',
@@ -43,9 +43,8 @@ export default {
     play (list) {
       playFn(list)
     },
-    downloadMp3 (id) {
-      console.log(downloadMp3)
-      downloadMp3.down(id)
+    downloadMp3 (id, downFileName) {
+      down(id, 'standard', downFileName)
     }
   }
 }

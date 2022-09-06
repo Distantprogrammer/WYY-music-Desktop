@@ -240,6 +240,7 @@ export default {
   },
   methods: {
     async getSong (id) {
+      // console.log(id)
       // if (condition) {
       // }
       // 获取歌曲详情, 和歌词方法

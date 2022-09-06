@@ -1,7 +1,7 @@
 <template>
   <div class="search_single">
     <div class="search_single_btn">
-      <button class="search_single_playall">
+      <button class="search_single_playall"  @click="play(singleMsg)">
         <span><i class="iconfont icon-bofang"></i></span>
         <span class="all">播放全部</span>
         <span><i class="iconfont icon-tianjia"></i></span>
@@ -12,32 +12,7 @@
         <span>下载全部</span>
       </button>
     </div>
-    <table class="search_single_table">
-      <thead>
-        <tr>
-          <td></td>
-          <td>音乐标题</td>
-          <td>歌手</td>
-          <td>专辑</td>
-          <td>时长</td>
-          <td>热度</td>
-        </tr>
-      </thead>
-      <tbody class="search_single_list">
-        <tr v-for="(obj, index) in singleMsg" :key="obj.id" @dblclick="play(singleMsg)">
-          <td>
-            {{ (index+1) > 9 ? (index+1) : '0' + (index+1) }}
-            <i class="iconfont icon-xihuan"></i>
-            <i class="iconfont icon-xiazai"></i>
-          </td>
-          <td>{{ obj.name }}</td>
-          <td>{{ obj.ar[0].name }}</td>
-          <td>{{ obj.al.name }}</td>
-          <td>{{ obj.dt | secondeTime }}</td>
-          <td>热度</td>
-        </tr>
-      </tbody>
-    </table>
+        <songList :singleMsg='singleMsg'/>
     <div class="loading" v-if="isLoading" @click="clickFlag && onsingle()">
       {{loadingHtml}}
     </div>
@@ -45,6 +20,7 @@
 </template>
 
 <script>
+import songList from '@/components/songList.vue'
 import playFn from '@/utils/play'
 import { CloudSearchAPI } from '@/api'
 // import { debounce } from 'lodash'
@@ -63,6 +39,9 @@ export default {
       clickFlag: false,
       loadingHtml: '加载中....'
     }
+  },
+  components: {
+    songList
   },
   // created () {
   // },
@@ -173,23 +152,6 @@ export default {
     background-color: transparent;
     border: 1px solid #4b4b4b;
     border-radius: 2.0833rem;
-  }
-  table {
-    vertical-align: middle;
-    td {
-      vertical-align: middle;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      padding: 0.4167rem 0.8333rem;
-      &:nth-child(2),
-      &:nth-child(4){
-      // width: 200px;
-      // height: 50px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      }
-    }
   }
   .search_single_list {
     width: 100%;

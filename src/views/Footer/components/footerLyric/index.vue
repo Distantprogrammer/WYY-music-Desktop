@@ -10,8 +10,8 @@
       <span><i class="iconfont icon-ai-rew-right"></i></span>
       <span @click="$parent.endedFn(-1)"><i class="iconfont icon-shangyishou"></i></span>
       <span @click="audioStart()"><i class="iconfont" :class="playState? 'icon-pause-mini-fill' : 'icon-bofang'"></i></span>
-      <span><i class="iconfont icon-xiayishou"></i></span>
-      <span @click="$parent.endedFn(1)"><i class="iconfont icon-shezhi"></i></span>
+      <span @click="$parent.endedFn(1)"><i class="iconfont icon-xiayishou"></i></span>
+      <span><i class="iconfont icon-shezhi"></i></span>
       <span @click="switchLockFn"><i class="iconfont" :class="lock ?  'icon-jiesuo' : 'icon-suoding'"></i></span>
       <span @click="$emit('close', false)"
         ><i class="iconfont icon-close-bold"></i

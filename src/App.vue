@@ -1,11 +1,14 @@
 <template>
   <div id="app">
+    <Login/>
      <!-- 一级路由 -->
     <router-view />
   </div>
 </template>
 
 <script>
+import Login from '@/views/Login'
+
 // import Header from '@/views/Header/index.vue'
 export default {
   name: 'App',
@@ -25,6 +28,9 @@ export default {
     }
     setFont()
     window.addEventListener('resize', setFont)
+  },
+  components: {
+    Login
   }
 
 }

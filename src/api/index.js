@@ -19,6 +19,7 @@ import {
   MultimatchSearch
 } from './Search'
 import { getSongUrl } from './download'
+import { phoneLogin, emailLogin, QRlkey, QRcreate, QRcheck } from './login'
 /**
  * 个性推荐
  */
@@ -55,3 +56,12 @@ export const MultimatchSearchAPI = MultimatchSearch // 搜索多重匹配
  * 下载
  */
 export const getSongUrlAPI = getSongUrl// 歌曲url
+
+/**
+ *登录
+ */
+export const phoneLoginAPI = phoneLogin // 手机登录
+export const emailLoginAPI = emailLogin // 邮箱登录
+export const QRlkeyAPI = QRlkey // 二维码生成key
+export const QRcreateAPI = QRcreate // 二维码生成接口
+export const QRcheckAPI = QRcheck // 二维码检测扫码状态接口

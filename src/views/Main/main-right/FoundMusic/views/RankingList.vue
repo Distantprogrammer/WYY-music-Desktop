@@ -38,7 +38,7 @@
         <ul>
           <li v-for="obj in global_list" :key="obj.id">
             <div class="global_img"  >
-              <Playbtn class="playBtn" @click.native="playFn"/>
+              <Playbtn class="playBtn" @click.native="globalPlay(obj.id)"/>
               <img :src="obj.coverImgUrl" alt="" @click="paramsFn(obj.id)"/>
             </div>
             <p class="global_text">{{ obj.name }}</p>
@@ -100,6 +100,7 @@ export default {
         this.fullscreenLoading = false
       }
     },
+    // 进入歌单详情页面数据处理
     async paramsFn (data) {
       // 判断数据是不是全球榜单的 及传过来的数据为id
       if (Object.prototype.toString.call(data) === '[object Number]') {
@@ -119,6 +120,13 @@ export default {
     playFn (data) {
       console.log(data)
       playFn(data)
+    },
+    // 全球榜播放
+    async globalPlay (id) {
+      const { data: { playlist: { trackIds } } } = await SongListDetailsAPI({
+        id
+      })
+      playFn(trackIds)
     }
 
   },

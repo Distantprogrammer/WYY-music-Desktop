@@ -90,6 +90,7 @@
           </li>
         </ul>
       </div>
+
     </div>
     <div style="height: 3.125rem"></div>
   </div>
@@ -115,6 +116,7 @@ export default {
   components: {
     searchHistory,
     searchSuggestion
+
   },
   async created () {
     this.onDefaultSearch()

@@ -1,17 +1,19 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import { getItem } from '@/utils/storage'
+import { setItem, getItem } from '@/utils/storage'
 
 Vue.use(Vuex)
 
-const PLAYMUSIC = 'PLAYMUSICLISTMSG'
+const officialMUSIC = 'officialMUSICLISTMSG'
+const songList = 'songList'
 
 export default new Vuex.Store({
   state: {
     // 歌曲信息
-    playMusicListMsg: getItem(PLAYMUSIC), //
+    officialMusicListMsg: getItem(officialMUSIC), // 排行榜数据
     playListMusic: [], // 列表
-    playOneMusic: null // 单数据
+    playOneMusic: null, // 单数据
+    songListMsg: getItem(songList) // 歌单数据
     // delfirst: null // 被删除的第一个元素
   },
   mutations: {
@@ -27,6 +29,16 @@ export default new Vuex.Store({
     // 合并的数据
     MergeList (state, list) {
       state.playMusicListMsg = list
+    },
+    // 歌单数据
+    setsongListMsg (state, data) {
+      state.songListMsg = data
+      setItem(songList, data)
+    },
+    // 排行榜数据
+    setofficialMusicListMsg (state, data) {
+      state.officialMusicListMsg = data
+      setItem(officialMUSIC, data)
     }
     // delIdMusic (state, index) {
     //   // 删除第一条数据

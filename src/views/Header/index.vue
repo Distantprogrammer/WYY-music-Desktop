@@ -185,7 +185,7 @@ export default {
   z-index: 11;
   width: 100%;
   display: flex;
-  background-color: #202023;
+  background-color: @hedfot;
   // background-color: pink;
   align-items: center;
   height: 3.125rem;

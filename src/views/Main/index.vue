@@ -65,13 +65,12 @@ export default {
   width: 100%;
   // height: 100%;
   display: flex;
-  background-color: #2b2b2b;
+  background-color: @backgroundColor;
   .main_right {
     height: 100%;
     // overflow-y: auto;
     flex: 5;
     // width: 100% - 10.107rem;
-    background-color: #2b2b2b;
     // padding: 0 30px;
     // &::-webkit-scrollbar {
     //   /*滚动条整体样式*/

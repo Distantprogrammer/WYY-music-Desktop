@@ -1,21 +1,20 @@
 <template>
-  <div class="portion_title">
+  <div class="portion_title" v-if="officialTracks">
           <ul>
             <!-- 这里使用了双重for循环 -->
-            <li class="clearfix"  v-for="(obj,index) in (officiaTracks.trackIds.slice(0,5))" :key="obj.id" @dblclick="playFn(obj.id)">
-              <!-- <div>{{ obj }}</div> -->
+            <li class="clearfix"  v-for="(obj,index) in (officialTracks.trackIds.slice(0,5))" :key="obj.id" @dblclick="playFn(obj.id)">
                <div class="portion_titlt_box">
                 <span class="if_bigthree">{{ index+1}}</span>
-                <span class="else_smthree" v-if="officiaTracks.ToplistType==='S'">{{ officiaTracks.trackIds[index].ratio}}%</span>
-                <span class="else_smthree" style="color:red; font-size: 5px;" v-if="officiaTracks.ToplistType==='O'">NEW</span>
-                <span class="else_smthree" v-if="officiaTracks.ToplistType==='N'">-</span>
-                <span class="else_smthree" v-if="officiaTracks.ToplistType==='H'">-</span>
+                <span class="else_smthree" v-if="officialTracks.ToplistType==='S'">{{ officialTracks.trackIds[index].ratio}}%</span>
+                <span class="else_smthree" style="color:red; font-size: 5px;" v-if="officialTracks.ToplistType==='O'">NEW</span>
+                <span class="else_smthree" v-if="officialTracks.ToplistType==='N'">-</span>
+                <span class="else_smthree" v-if="officialTracks.ToplistType==='H'">-</span>
                 <span style="color: #ddd"
-                  >{{officiaTracks.tracks[index].name}} &nbsp;<span v-if="officiaTracks.tracks[index].alia[0]" class="else_smthree"
-                    >({{ officiaTracks.tracks[index].alia[0] }})</span
+                  >{{officialTracks.tracks[index].name}} &nbsp;<span v-if="officialTracks.tracks[index].alia[0]" class="else_smthree"
+                    >({{ officialTracks.tracks[index].alia[0] }})</span
                   >
                 </span>
-                <span class="title_rigth">{{officiaTracks.tracks[index].ar[0].name}}</span>
+                <span class="title_rigth">{{officialTracks.tracks[index].ar[0].name}}</span>
               </div>
             </li>
             <li>
@@ -30,7 +29,7 @@
 import playFn from '@/utils/play'
 export default {
   props: {
-    officiaTracks: {
+    officialTracks: {
       required: true
     }
   },
@@ -75,6 +74,7 @@ export default {
             padding: 0 8px;
           }
           .title_rigth {
+            color: @fontsize;
             float: right;
           }
         }

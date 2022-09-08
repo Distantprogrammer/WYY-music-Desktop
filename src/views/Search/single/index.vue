@@ -12,7 +12,7 @@
         <span>下载全部</span>
       </button>
     </div>
-        <songList :singleMsg='singleMsg'/>
+        <songList :singleMsg='singleMsg' :listTable='listTable'/>
     <div class="loading" v-if="isLoading" @click="clickFlag && onsingle()">
       {{loadingHtml}}
     </div>
@@ -37,7 +37,8 @@ export default {
       isLoading: false, // 默认没有在加载数据
       time: null,
       clickFlag: false,
-      loadingHtml: '加载中....'
+      loadingHtml: '加载中....',
+      listTable: ['操作', '音乐标题', '歌手', '专辑', '时长', '热度'] // 表格的表头
     }
   },
   components: {

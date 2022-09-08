@@ -72,7 +72,6 @@ export default {
       // getItem('songMsg', this.songMsg)
     },
     handleClick (tab, event) {
-      console.log(tab, event)
     },
     clickHandel (Boolean) {
       const $listHeight = this.$refs.list.scrollHeight
@@ -160,4 +159,26 @@ export default {
     margin-top: 1.25rem;
   }
 }
+</style>
+<style lang="less" scoped>
+.el-tab {
+      background-color: transparent;
+    }
+    /deep/.el-tabs__item {
+      color: @navBar;
+      font-size: .75rem;
+    }
+    /deep/.is-active {
+      font-size: .9167rem;
+      font-weight: 800;
+    }
+    /deep/.el-tabs__active-bar {
+      height: .2083rem;
+      background-color: @btnred;
+    }
+    /deep/ .el-tabs__nav-wrap {
+      &::after {
+        background-color: transparent;
+      }
+    }
 </style>

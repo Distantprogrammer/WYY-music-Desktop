@@ -1,13 +1,9 @@
 <template>
-  <div class="rankingList"
-  v-loading="loading"
-    element-loading-text="拼命加载中"
+  <div class="rankingList" v-loading.fullscreen.lock="fullscreenLoading"  element-loading-text="拼命加载中"
     element-loading-spinner="el-icon-loading"
-    element-loading-background="rgba(0, 0, 0, 0.8)"
-    :data="tableData"
-   >
+    element-loading-background="rgba(0, 0, 0, 0.8)">
     <!-- 官方榜 -->
-    <div class="official_list" v-if=" official_list && soaringTracks">
+    <div class="official_list" v-if=" official_list && officialTracks" >
       <h3 class="public_title">
         官方榜
         <!-- <i class="iconfont icon-arrow-right-bold arrow_right"></i> -->
@@ -18,17 +14,14 @@
         v-for="(obj, index) in official_list"
         :key="index"
       >
-        <div class="portion_img" @click="$router.push({path:'/songListDeta'})">
-          <Playbtn class="playBtn" />
+        <div class="portion_img" >
+          <Playbtn class="playBtn" @click.native="playFn(officialTracks[index].trackIds)"/>
           <span class="updateTime"
             >{{ obj.updateTime | monthTime('MM月DD日') }}更新</span
           >
-          <img :src="obj.coverImgUrl" alt="" />
+          <img :src="obj.coverImgUrl" alt="" @click="paramsFn(officialTracks[index])" />
         </div>
-           <portionTitle v-if="official_list[index].ToplistType==='S'" :officiaTracks='soaringTracks'/>
-           <portionTitle v-if="official_list[index].ToplistType==='O'" :officiaTracks='newSongTracks'/>
-           <portionTitle v-if="official_list[index].ToplistType==='N'" :officiaTracks='originalTracks'/>
-           <portionTitle v-if="official_list[index].ToplistType==='H'" :officiaTracks='hostSongTracks'/>
+           <portionTitle :officialTracks='officialTracks[index]'/>
       </div>
       <!-- for循环 -->
       <div class="new_list"></div>
@@ -44,9 +37,9 @@
       <div class="global_box">
         <ul>
           <li v-for="obj in global_list" :key="obj.id">
-            <div class="global_img">
-              <Playbtn class="playBtn" />
-              <img :src="obj.coverImgUrl" alt="" />
+            <div class="global_img"  >
+              <Playbtn class="playBtn" @click.native="playFn"/>
+              <img :src="obj.coverImgUrl" alt="" @click="paramsFn(obj.id)"/>
             </div>
             <p class="global_text">{{ obj.name }}</p>
           </li>
@@ -61,17 +54,19 @@ import portionTitle from '../components/portion-title.vue'
 import { RankingListAPI, SongListDetailsAPI } from '@/api'
 import Playbtn from '@/components/playBtn.vue'
 import playFn from '@/utils/play'
+// import { getItem } from '@/utils/storage'
 export default {
   name: 'RankingList',
   data () {
     return {
-      loading: false, // 加载条
+      fullscreenLoading: false,
       official_list: [], // 官方
       global_list: [], // 全球
-      soaringTracks: { trackIds: [] }, // 飙升榜
-      newSongTracks: { trackIds: [] }, // 新歌榜
-      originalTracks: { trackIds: [] }, // 原创
-      hostSongTracks: { trackIds: [] } // 热歌榜
+      // soaringTracks: { trackIds: [] }, // 飙升榜
+      // newSongTracks: { trackIds: [] }, // 新歌榜
+      // originalTracks: { trackIds: [] }, // 原创
+      // hostSongTracks: { trackIds: [] }, // 热歌榜
+      officialTracks: this.$store.state.officialMusicListMsg
     }
   },
   created () {
@@ -80,7 +75,6 @@ export default {
   methods: {
     // 排行榜
     async getRankingList () {
-      this.loading = true // 开启加载条
       const {
         data: { list }
       } = await RankingListAPI()
@@ -92,60 +86,39 @@ export default {
     },
     // 排行榜详情
     async getSongListDetails () {
-      { const res = await SongListDetailsAPI({
-        id: this.official_list[0].id
-      })
-      const { data: { playlist } } = res
-      this.soaringTracks = playlist }
-
-      { const res = await SongListDetailsAPI({
-        id: this.official_list[1].id
-      })
-      const { data: { playlist } } = res
-      this.newSongTracks = playlist }
-
-      { const res = await SongListDetailsAPI({
-        id: this.official_list[2].id
-      })
-      const { data: { playlist } } = res
-      this.originalTracks = playlist }
-
-      { const res = await SongListDetailsAPI({
-        id: this.official_list[3].id
-      })
-      const { data: { playlist } } = res
-      this.hostSongTracks = playlist }
-      this.loading = false
-      // this.official_list.forEach(async (item, i) => {
-      //   const res = await SongListDetailsAPI({
-      //     id: this.official_list[i].id
-      //   })
-      //   const { data: { playlist } } = res
-      //   this.officialTracks.push(playlist)
-      // })
-      // for (let i = 0; i < this.official_list.length; i++) {
-      //   const res = await SongListDetailsAPI({
-      //     id: this.official_list[i].id
-      //   })
-      //   const { data: { playlist } } = res
-      //   if (i === 0) {
-      //     // 飙升榜
-      //     this.soaringTracks = playlist
-      //   } else if (i === 1) {
-      //     // 新歌榜
-      //     this.newSongTracks = playlist
-      //   } else if (i === 2) {
-      //     // 原创
-      //     this.originalTracks = playlist
-      //   } else {
-      //     // 热歌榜
-      //     this.hostSongTracks = playlist
-      //   }
-      // }
+      this.fullscreenLoading = true
+      // 循环请求排行榜数据
+      // 清除this.officialTracks已有的数据
+      this.officialTracks = []
+      for (let i = 0; i < this.official_list.length; i++) {
+        const res = await SongListDetailsAPI({
+          id: this.official_list[i].id
+        })
+        const { data: { playlist } } = res
+        this.officialTracks.push(await playlist)
+        this.$store.commit('setofficialMusicListMsg', this.officialTracks)
+        this.fullscreenLoading = false
+      }
+    },
+    async paramsFn (data) {
+      // 判断数据是不是全球榜单的 及传过来的数据为id
+      if (Object.prototype.toString.call(data) === '[object Number]') {
+        this.fullscreenLoading = true
+        const res = await SongListDetailsAPI({
+          id: data
+        })
+        const { data: { playlist } } = res
+        this.$store.commit('setsongListMsg', playlist)
+        this.fullscreenLoading = false
+      } else {
+        this.$store.commit('setsongListMsg', data)
+      }
+      // 数据传入vuex
+      this.$router.push({ name: 'songListDeta' })
     },
     playFn (data) {
+      console.log(data)
       playFn(data)
-      console.log(this.soaringTracks.trackIds)
     }
 
   },

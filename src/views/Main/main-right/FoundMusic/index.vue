@@ -7,22 +7,22 @@
         class="el-menu-demo"
         mode="horizontal"
         @select="handleSelect"
-        router
+        :router="true"
       >
-        <el-menu-item index="1" :route="{ name: 'recommendSong' }"
+        <el-menu-item index="/foundMusic" :route="{ path: '/' }"
           >个性推荐</el-menu-item
         >
-        <el-menu-item index="2" :route="{ name: 'exclusiveCustomization' }"
+        <el-menu-item index="/foundMusic/customization" :route="{ path: '/foundMusic/customization' }"
           >专属定制</el-menu-item
         >
-        <el-menu-item index="3" :route="{ name: 'songList' }"
+        <el-menu-item index="/foundMusic/songList" :route="{ path: '/foundMusic/songList' }"
           >歌单</el-menu-item
         >
-        <el-menu-item index="4" :route="{ name: 'rankingList' }"
+        <el-menu-item index="/foundMusic/rankingList" :route="{ path: '/foundMusic/rankingList' }"
           >排行榜</el-menu-item
         >
-        <el-menu-item index="5" :route="{ name: 'singer' }">歌手</el-menu-item>
-        <el-menu-item index="6" :route="{ name: 'latestMusic' }"
+        <el-menu-item index="/foundMusic/singer" :route="{ path: '/foundMusic/singer' }">歌手</el-menu-item>
+        <el-menu-item index="/foundMusic/latestMusic" :route="{ path: '/foundMusic/latestMusic' }"
           >最新音乐</el-menu-item
         >
       </el-menu>
@@ -32,7 +32,9 @@
     <!-- 内容区域 -->
     <div class="wapper_width">
       <div class="main_wapper">
+        <keep-alive>
         <router-view></router-view>
+        </keep-alive>
       </div>
     </div>
   </div>
@@ -43,12 +45,12 @@ export default {
   name: 'MainNavIndex',
   data () {
     return {
-      activeIndex: '1'
+      activeIndex: this.$route.path
     }
   },
   updated () {
     // console.log(this.$route.query.id)
-    this.activeIndex = this.$route.query.id// 左侧侧边栏激活右侧导航栏初始化
+    // this.activeIndex = this.$route.query.id// 左侧侧边栏激活右侧导航栏初始化
   },
   // computed: {
   //   activeIndex () {
@@ -57,11 +59,18 @@ export default {
   //     return this.$route.query.id
   //   }
   // },
-  watch: {},
+  watch: {
+    // 监听路由变化
+    '$route.path': {
+      handler (routePath) {
+        this.handleSelect(routePath)
+      }
+    }
+  },
   methods: {
-    handleSelect (key, keyPath) {
-      // console.log(key, keyPath)
-      // this.activeIndex = key
+    handleSelect (routePath) {
+      // 路由跳转时，标记在导航的那个选项下对应的路由
+      this.activeIndex = this.$route.path
     }
   }
 }

@@ -28,11 +28,11 @@ const routes = [
               )
           },
           {
-            path: 'exclusiveCustomization', // 专属定制
-            name: 'exclusiveCustomization',
+            path: 'customization', // 专属定制
+            name: 'customization',
             component: () =>
               import(
-                '@/views/Main/main-right/FoundMusic/views/ExclusiveCustomization.vue'
+                '@/views/Main/main-right/FoundMusic/views/Customization.vue'
               )
           },
           {
@@ -55,13 +55,13 @@ const routes = [
             // ]
           },
           {
-            path: '/singer', // 歌手
+            path: 'singer', // 歌手
             name: 'singer',
             component: () =>
               import('@/views/Main/main-right/FoundMusic/views/Singer.vue')
           },
           {
-            path: '/latestMusic', // 最新音乐
+            path: 'latestMusic', // 最新音乐
             name: 'latestMusic',
             component: () =>
               import('@/views/Main/main-right/FoundMusic/views/LatestMusic.vue')

@@ -299,7 +299,6 @@ export default {
         // 如果状态为false
         // this.scrollAmount = '5'
         this.$refs.audio.play() // 调用audio标签的内置方法play可以继续播放声音
-        console.log(this.$refs.audio.src)
       } else {
         // this.scrollAmount = '0'
         this.$refs.audio.pause() // 暂停audio的播放
@@ -451,7 +450,7 @@ export default {
   width: 100%;
   height: 3.579rem;
   margin: 0 auto;
-  background-color: #202023;
+  background-color:@hedfot;
   cursor: pointer;
   .details {
     min-width: 160px;

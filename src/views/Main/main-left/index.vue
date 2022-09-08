@@ -74,7 +74,7 @@ export default {
   padding-left: 0.911rem;
   overflow-y: scroll;
   border-right: 0.036rem solid #4c4949;
-  background-color: #2b2b2b;
+  background-color: @hedfot;
   &::-webkit-scrollbar {
     /*滚动条整体样式*/
     width: 5px;

@@ -5,7 +5,7 @@
 
 <script>
 export default {
-  name: 'ExclusiveCustomization '
+  name: 'customization'
 }
 </script>
 

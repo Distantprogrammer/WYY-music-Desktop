@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import { setItem, getItem } from '@/utils/storage'
+import user from './user'
+import getters from './getters'
 
 Vue.use(Vuex)
 
@@ -40,17 +42,12 @@ export default new Vuex.Store({
       state.officialMusicListMsg = data
       setItem(officialMUSIC, data)
     }
-    // delIdMusic (state, index) {
-    //   // 删除第一条数据
-    //   state.delfirst = state.playMusicListMsg.shift()
-    //   setItem(PLAYMUSIC, state.playMusicListMsg) // 重新赋值
-    // }
   },
-  // actions: {
-  //   getIdMusic (context, id) {
-  //     context.commit('getIdMusic', id)
-  //   }
-  // },
-  // 歌单列表
-  modules: {}
+  actions: {
+
+  },
+  modules: {
+    user
+  },
+  getters
 })

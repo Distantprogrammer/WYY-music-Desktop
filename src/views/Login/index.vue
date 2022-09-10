@@ -1,52 +1,111 @@
 <template>
-  <div class="login">
+  <div class="login" v-if="loginShow">
     <van-nav-bar @click-right="onClickRight">
       <template #right>
         <span class="el-icon-close"></span>
         <!-- <van-icon name="search" size="18" /> -->
       </template>
     </van-nav-bar>
-    <div class="loginMain">
-      <van-row><img src="../../images/wyylogo.png" alt="" /></van-row>
-      <van-row>
-        <van-form @submit="onSubmit">
-          <van-field
-            v-model="username"
-            name="用户名"
-            label="用户名"
-            placeholder="用户名"
-            :rules="[{ required: true, message: '请填写用户名' }]"
-          />
-          <van-field
-            v-model="password"
-            type="password"
-            name="密码"
-            label="密码"
-            placeholder="密码"
-            :rules="[{ required: true, message: '请填写密码' }]"
-          />
-          <div style="margin: 16px">
-            <van-button round block type="info" native-type="submit"
-              >提交</van-button
-            >
-          </div>
-        </van-form>
-      </van-row>
-      <van-row>
-        <span>使用<a href="#">网易云APP扫码登录</a></span></van-row
-      >
+   <div class="loginMain">
+    <van-row> <h1>扫码登录</h1></van-row>
+    <van-row> <img :src="QRBase64" alt=""></van-row>
+    <van-row> <span>使用<a href="#">网易云APP扫码登录</a></span></van-row>
     </div>
     <van-row class="pattern"> 选择其他登录模式</van-row>
   </div>
 </template>
 
 <script>
+import { QRkeyAPI, QRcreateAPI, QRcheckAPI, loginStatusAPI } from '@/api'
+import { getcookies } from '@/utils/auth'
+import { mapMutations } from 'vuex'
 export default {
   name: 'login',
+  model: {
+    prop: 'loginShow'
+  },
+  props: {
+    loginShow: Boolean
+  },
+  data () {
+    return {
+      QRKey: '',
+      QRBase64: '',
+      cookier: '',
+      timer: null,
+      loginMsg: ''
+    }
+  },
+  created () {
+    // this.loginQR()
+    // this.getQRkeyAPI()
+  },
   methods: {
+    ...mapMutations(['user/setcookies', 'user/setUserInfo']),
     // 关闭
     onClickRight () {
-      console.log(111)
+      // console.log(111)
+    },
+    async loginQR () {
+      // eslint-disable-next-line no-unused-vars
+      const timestamp = Date.now()
+      // const cookie = this['user/getcookies']()
+      const cookie = getcookies()
+      this.getLoginStatus(cookie)
+      // 获取key
+      await this.getQRkeyAPI()
+      // 创建二维码
+      await this.getQRcreateAPI(this.QRKey)
+      this.timer = setInterval(async () => {
+        // 判断扫码状态
+        const statusRes = await this.getQRcheckAPI(this.QRKey)
+        // console.log(statusRes)
+        // console.log(statusRes.code)
+        if (statusRes.code === 800) {
+          this.$message('二维码已过期,请重新获取')
+          clearInterval(this.timer)
+        }
+        if (statusRes.code === 803) {
+          // 这一步会返回cookie
+          clearInterval(this.timer)
+          this.$message('授权登录成功')
+          await this.getLoginStatus(statusRes.cookie)
+          // 设置到vuex里处理
+          this['user/setcookies'](statusRes.cookie)
+        }
+      }, 3000)
+    },
+    // 获取key
+    async getQRkeyAPI () {
+      try {
+        const { data: { data: { unikey } } } = await QRkeyAPI()
+        await this.getQRcreateAPI(unikey)
+        this.QRKey = unikey
+        // this.getQRcheckAPI(unikey)
+      } catch (error) {
+        this.$message('获取二维码失败')
+      }
+    },
+    // 二维码生成接口
+    async getQRcreateAPI (key) {
+      const { data: { data } } = await QRcreateAPI(key)
+      this.QRBase64 = data.qrimg
+    },
+    // 二维码检测扫码状态接口
+    async getQRcheckAPI (key) {
+      const { data } = await QRcheckAPI(key)
+      return data
+    },
+    // 登录状态
+    async getLoginStatus (cookie = '') {
+      const { data: { profile } } = await loginStatusAPI(cookie)
+      this['user/setUserInfo'](profile)
+    },
+    // 重新获取二维码
+    afreshGetQR () {
+      console.log('重新获取二维码')
+      this.getLoginQRImg()
+      this.codeIsValid = true
     }
   }
 }
@@ -65,15 +124,16 @@ export default {
   .van-hairline--bottom::after {
     border: none;
   }
-  .loginMain {
+  .loginMain{
     display: flex;
     flex-direction: column;
     align-items: center;
-    .van-row {
-      margin: 10px 0;
+    .van-row{
+      margin: 20px 0;
+
     }
   }
-  .pattern {
+  .pattern{
     position: absolute;
     left: 50%;
     bottom: 10%;

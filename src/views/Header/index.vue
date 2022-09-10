@@ -62,7 +62,7 @@
             <div>
               <em>-远方的远</em>
               <span>CVIP·伍</span>
-              <i class="iconfont">&#xe687;</i>
+              <i class="iconfont" @click="loginShow = true">&#xe687;</i>
             </div>
           </li>
           <li>
@@ -92,11 +92,13 @@
       </div>
 
     </div>
+    <Login v-model="loginShow"/>
     <div style="height: 3.125rem"></div>
   </div>
 </template>
 
 <script>
+import Login from '@/views/Login'
 import { DefaultSearchAPI } from '@/api'
 import { setItem } from '@/utils/storage'
 // 导入搜索子组件
@@ -106,6 +108,7 @@ export default {
   name: 'HeaderIndex',
   data () {
     return {
+      loginShow: false, // 登录界面
       searchValue: '', // 搜索内容
       searchBox: null, // 搜索界面的大盒子
       searchShow: true, // 搜索历史与搜索建议显示隐藏
@@ -115,7 +118,8 @@ export default {
   },
   components: {
     searchHistory,
-    searchSuggestion
+    searchSuggestion,
+    Login
 
   },
   async created () {

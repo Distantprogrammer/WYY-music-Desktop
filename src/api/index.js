@@ -19,7 +19,8 @@ import {
   MultimatchSearch
 } from './Search'
 import { getSongUrl } from './download'
-import { phoneLogin, emailLogin, QRlkey, QRcreate, QRcheck } from './login'
+import { phoneLogin, emailLogin, QRkey, QRcreate, QRcheck, loginStatus } from './login'
+import { userAccount, userDetail } from './user'
 /**
  * 个性推荐
  */
@@ -60,8 +61,15 @@ export const getSongUrlAPI = getSongUrl// 歌曲url
 /**
  *登录
  */
+export const loginStatusAPI = loginStatus // 登录状态
 export const phoneLoginAPI = phoneLogin // 手机登录
 export const emailLoginAPI = emailLogin // 邮箱登录
-export const QRlkeyAPI = QRlkey // 二维码生成key
+export const QRkeyAPI = QRkey // 二维码生成key
 export const QRcreateAPI = QRcreate // 二维码生成接口
 export const QRcheckAPI = QRcheck // 二维码检测扫码状态接口
+
+/**
+ * 用户信息
+ */
+export const userDetailAPI = userDetail // 用户详情
+export const userAccountAPI = userAccount // 账号信息

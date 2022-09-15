@@ -13,3 +13,9 @@ export const getLyricById = (id) =>
     url: `/lyric?id=${id}`,
     method: 'GET'
   })
+
+// 音乐是否可用
+export const getCheckMusic = (id) =>
+  request({
+    url: `/check/music?id=${id}`
+  })

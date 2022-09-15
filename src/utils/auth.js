@@ -1,24 +1,16 @@
 import Cookies from 'js-cookie'
 
-const CookiesKey = 'wwy-cookies'
-// const timeKey = 'hrsaas-timestamp-key' // 获取token时的事件戳
+const CookiesKey = 'wyy-cookies'
 
-export function getcookies () {
-  return Cookies.get(CookiesKey)
+export function setCookies (string) {
+  return Cookies.set(CookiesKey, string)
 }
 
-export function setcookies (cookies) {
-  return Cookies.set(CookiesKey, cookies)
+export function getCookie (key) {
+  return Cookies.get(key) ?? localStorage.getItem(key)
 }
 
-export function removecookies () {
-  return Cookies.remove(CookiesKey)
+export function removeCookie (key) {
+  Cookies.remove(key)
+  localStorage.removeItem(key)
 }
-
-// export function getTimeStamp () {
-//   return Cookies.get(timeKey)
-// }
-
-// export function setTimeStamp () {
-//   return Cookies.set(timeKey, Date.now())
-// }

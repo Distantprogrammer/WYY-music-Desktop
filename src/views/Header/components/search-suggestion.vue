@@ -3,7 +3,7 @@
     <!-- 猜你想搜 -->
     <div class="guess">
       <van-cell icon="search">
-        <span slot="title">猜你想搜</span>
+        <span slot="title" class="fff">猜你想搜</span>
       </van-cell>
       <div class="search_result">
         <router-link :to="{ path: '/search', query:{value:searchValue} }">
@@ -18,7 +18,7 @@
     <!-- 单曲 -->
     <div class="single" v-if="order.includes('playlists')">
       <van-cell icon="search">
-        <span slot="title">单曲</span>
+        <span slot="title" class="fff">单曲</span>
       </van-cell>
       <div class="search_result">
         <van-cell v-for="obj in oneSearchList" :key="obj.id">
@@ -34,7 +34,7 @@
     <!-- 歌手 -->
     <div class="singer" v-if="order.includes('artists')">
       <van-cell icon="search">
-        <span slot="title">歌手</span>
+        <span slot="title" class="fff">歌手</span>
       </van-cell>
       <div class="search_result">
         <van-cell
@@ -47,7 +47,7 @@
     <!-- 专辑 -->
     <div class="album" v-if="order.includes('albums')">
       <van-cell icon="search">
-        <span slot="title">专辑</span>
+        <span slot="title" class="fff">专辑</span>
       </van-cell>
       <div class="search_result">
         <van-cell v-for="obj in albumSearchList" :key="obj.id">
@@ -61,7 +61,7 @@
     <!-- 歌单 -->
     <div class="song_list" v-if="order.includes('playlists')">
       <van-cell icon="search">
-        <span slot="title">歌单</span>
+        <span slot="title" class="fff">歌单</span>
       </van-cell>
       <div class="search_result">
         <van-cell :title="obj.name" v-for="obj in searchSongList" :key="obj.id">
@@ -145,16 +145,24 @@ export default {
 }
 </script>
 
-<style lang="less" scoped>
+<style lang="less">
 .search_result {
   padding: 0 16px;
   white-space: nowrap;
-  .alias {
-    color: rgb(99, 88, 88);
-  }
+  color: #fff !important;
   .van-cell__title {
     padding: 5px 0;
     font-size: 12px;
+    color: rgb(224, 197, 197) !important;
   }
 }
+ /deep/.van-cell {
+     color: #fff !important;
+  }
+  .alias{
+    color: @fontsize;
+  }
+  .fff{
+    color: #fff !important;
+  }
 </style>

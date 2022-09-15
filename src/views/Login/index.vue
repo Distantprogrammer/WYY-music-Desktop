@@ -17,8 +17,8 @@
 
 <script>
 import { QRkeyAPI, QRcreateAPI, QRcheckAPI, loginStatusAPI } from '@/api'
-import { getcookies } from '@/utils/auth'
 import { mapMutations } from 'vuex'
+// import { getItem } from '@/utils/storage'
 export default {
   name: 'login',
   model: {
@@ -37,21 +37,19 @@ export default {
     }
   },
   created () {
-    // this.loginQR()
-    // this.getQRkeyAPI()
+    this.loginQR()
   },
   methods: {
     ...mapMutations(['user/setcookies', 'user/setUserInfo']),
     // 关闭
     onClickRight () {
+      this.$emit('input', false)
       // console.log(111)
     },
     async loginQR () {
       // eslint-disable-next-line no-unused-vars
       const timestamp = Date.now()
-      // const cookie = this['user/getcookies']()
-      const cookie = getcookies()
-      this.getLoginStatus(cookie)
+      // this.getLoginStatus(cookie)
       // 获取key
       await this.getQRkeyAPI()
       // 创建二维码
@@ -98,8 +96,12 @@ export default {
     },
     // 登录状态
     async getLoginStatus (cookie = '') {
-      const { data: { profile } } = await loginStatusAPI(cookie)
-      this['user/setUserInfo'](profile)
+      const { data: { data } } = await loginStatusAPI(cookie)
+      console.log(data)
+      this['user/setUserInfo'](data)
+      this.$emit('inform', data)
+      clearInterval(this.timer)
+      this.$emit('input', false)
     },
     // 重新获取二维码
     afreshGetQR () {
@@ -107,6 +109,12 @@ export default {
       this.getLoginQRImg()
       this.codeIsValid = true
     }
+  },
+  // 清除定时器
+  beforeDestroy () {
+    console.log(111)
+    clearInterval(this.timer)
+    this.timer = null
   }
 }
 </script>

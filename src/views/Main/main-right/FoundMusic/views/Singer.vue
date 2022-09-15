@@ -1,12 +1,16 @@
 <template>
-  <div>
-      歌手
+  <div class="Singer">
+      <singerBox/>
   </div>
 </template>
 
 <script>
+import singerBox from '@/components/singerBox'
 export default {
-  name: 'Singer'
+  name: 'Singer',
+  components: {
+    singerBox
+  }
 }
 </script>
 

@@ -82,7 +82,9 @@ export default {
       this.official_list = list.slice(0, 4) // 截取数组
       // 全球排行榜
       this.global_list = list.slice(4)
-      this.getSongListDetails()
+      if (!window.sessionStorage.getItem('officialMUSICLISTMSG')) {
+        this.getSongListDetails()
+      }
     },
     // 排行榜详情
     async getSongListDetails () {
@@ -216,7 +218,7 @@ export default {
           border-radius: 0.2083rem;
           overflow: hidden;
           .playBtn {
-            opacity: 1;
+            opacity: 0;
             position: absolute;
             bottom: 6%;
             right: 6%;

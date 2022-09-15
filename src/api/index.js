@@ -7,7 +7,7 @@ import {
   RecommendedMV
 } from './DiscovrMusic'
 
-import { getSongById, getLyricById } from './Play'
+import { getSongById, getLyricById, getCheckMusic } from './Play'
 import { SongListDetails, RankingList } from './RankingList'
 import {
   CloudSearch,
@@ -21,6 +21,7 @@ import {
 import { getSongUrl } from './download'
 import { phoneLogin, emailLogin, QRkey, QRcreate, QRcheck, loginStatus } from './login'
 import { userAccount, userDetail } from './user'
+import { playlistCatlist, playlistHot, topPlaylist, playlistHighquality, relatedPlaylist, playlistTrack } from './playList'
 /**
  * 个性推荐
  */
@@ -36,11 +37,18 @@ export const RecommendedMVAPI = RecommendedMV // 推荐MV
  */
 export const getSongByIdAPI = getSongById // 歌曲 - 播放地址
 export const getLyricByIdAPI = getLyricById // 歌曲 - 歌词数据
+export const getCheckMusicAPI = getCheckMusic // 音乐可不可用
 /**
  * 歌单
  */
-export const SongListDetailsAPI = SongListDetails // 歌单详情
 export const RankingListAPI = RankingList // 排行榜入口
+export const SongListDetailsAPI = SongListDetails // 歌单详情
+export const playlistCatlistAPI = playlistCatlist // 歌单分类
+export const playlistHotAPI = playlistHot // 热门歌单分类
+export const topPlaylistAPI = topPlaylist // 歌单 ( 网友精选碟 )
+export const playlistHighqualityAPI = playlistHighquality // 精品歌单标签列表
+export const relatedPlaylistAPI = relatedPlaylist // 相关歌单推荐
+export const playlistTrackAPI = playlistTrack // 获取歌单所有歌曲
 
 /**
  * 搜索

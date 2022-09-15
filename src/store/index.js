@@ -12,7 +12,7 @@ const songList = 'songList'
 export default new Vuex.Store({
   state: {
     // 歌曲信息
-    officialMusicListMsg: getItem(officialMUSIC), // 排行榜数据
+    officialMusicListMsg: JSON.parse(window.sessionStorage.getItem(officialMUSIC)), // 排行榜数据
     playListMusic: [], // 列表
     playOneMusic: null, // 单数据
     songListMsg: getItem(songList) // 歌单数据
@@ -40,7 +40,9 @@ export default new Vuex.Store({
     // 排行榜数据
     setofficialMusicListMsg (state, data) {
       state.officialMusicListMsg = data
-      setItem(officialMUSIC, data)
+      // 储存到sessionStorage里去
+      window.sessionStorage.setItem(officialMUSIC, JSON.stringify(data))
+      // setItem(officialMUSIC, data)
     }
   },
   actions: {

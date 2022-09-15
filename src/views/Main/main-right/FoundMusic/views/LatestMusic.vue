@@ -1,12 +1,16 @@
 <template>
-  <div>
-      最新音乐
+  <div class="LatestMusic">
+    <newMusic/>
   </div>
 </template>
 
 <script>
+import newMusic from '@/components/newMusic'
 export default {
-  name: 'LatestMusic'
+  name: 'LatestMusic',
+  components: {
+    newMusic
+  }
 }
 </script>
 

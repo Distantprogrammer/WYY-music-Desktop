@@ -1,20 +1,22 @@
-import { setItem, getItem } from '@/utils/storage'
-import { setcookies, getcookies, removecookies } from '@/utils/auth'
-
+import { setItem, getItem, reomveItem } from '@/utils/storage'
+import { setCookies, removeCookie } from '@/utils/auth'
+const cookies = 'wyy-cookies'
 const state = {
-  cookies: getcookies(),
-  userInfo: getItem('userInfo')
+  cookies: getItem(cookies),
+  userInfo: getItem('userInfo') ?? ''
 }
 const mutations = {
   // 设置Cookies
-  setcookies (state, cookies) {
-    state.cookies = cookies // 设置token
-    setcookies(cookies) // vuex和 缓存数据的同步
+  setcookies (state, cookie) {
+    state.cookies = cookie // 设置token
+    setCookies(cookie)
+    setItem(cookies, cookie) // vuex和 缓存数据的同步
   },
   // 删除 Cookies
-  removecookies (cookies) {
+  removecookies (state) {
     state.cookies = null // 删除vuex的token
-    removecookies() // 先清除 vuex  再清除缓存 vuex和 缓存数据的同步
+    reomveItem(cookies) // 先清除 vuex  再清除缓存 vuex和 缓存数据的同步
+    removeCookie(cookies)
   },
   // 设置用户信息
   setUserInfo (state, data) {

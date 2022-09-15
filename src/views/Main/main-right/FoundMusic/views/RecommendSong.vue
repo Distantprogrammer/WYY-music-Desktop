@@ -5,7 +5,7 @@
     <div class="main_slideshow">
       <el-carousel :interval="4000" type="card" height="200px" id="el" loop>
         <el-carousel-item v-for="item in bannerList" :key="item.imageUrl">
-          <a class="img_a" href="javascrip:;">
+          <a class="img_a" @click="playFn(item.targetId)">
             <el-image class="slideshow_img" :src="item.imageUrl" alt="">
             </el-image>
             <em>{{ item.typeTitle }}</em>
@@ -25,7 +25,9 @@
             <!-- 上5 -->
             <li v-for="item in SongList" :key="item.id">
               <div class="daily_push">
-                <el-image :src="item.picUrl"></el-image>
+                 <div class="view_counts"><i class="iconfont icon-24gl-play"></i> {{ item.playCount | numberFormat }}</div>
+                <playBtn class="playBtn"  @click.native="listPlay(item.id)"/>
+                <img :src="item.picUrl" @click="songList(item.id)"/>
                 <!-- <img :src="item.picUrl" alt="" /> -->
               </div>
               <p class="playlist_introduced">{{ item.name }}</p>
@@ -44,10 +46,11 @@
           <ul>
             <li v-for="obj in newSongLIst" :key="obj.id">
               <!-- 把点击的歌曲信息传过去 -->
-              <div class="podcast_img position_relative" @click="playFn(obj.id)">
-                <Playbtn
-                  class="play"
-                ></Playbtn>
+              <div
+                class="podcast_img position_relative"
+                @click="playFn(obj.id)"
+              >
+                <Playbtn class="play"></Playbtn>
                 <img :src="obj.picUrl" alt="" />
               </div>
               <!-- 文字 -->
@@ -138,12 +141,14 @@
 </template>
 
 <script>
+import songList from '@/utils/songList'
 import {
   HomeBannerAPI,
   RecommendThePlayListAPI,
   RecommendNewMusicAPI,
   ExclusiveAndPoredOverAPI,
-  RecommendedMVAPI
+  RecommendedMVAPI,
+  SongListDetailsAPI
 } from '@/api/index'
 
 import playFn from '@/utils/play'
@@ -164,11 +169,11 @@ export default {
     Playbtn
   },
   created () {
-    // this.BannerImg() // 轮播图
-    // this.recommendSong() // 推荐歌单
+    this.BannerImg() // 轮播图
+    this.recommendSong() // 推荐歌单
     this.NewMusic() // 最新音乐
-    // this.Exclusive() // 独家放送
-    // this.RecommendedMV() // 推荐mv
+    this.Exclusive() // 独家放送
+    this.RecommendedMV() // 推荐mv
   },
   // 检查本地存储是否有，没有自动发起接口
   methods: {
@@ -228,6 +233,16 @@ export default {
       playFn(data)
       // console.log(12, id)
       // this.$store.commit('delIdMusic')
+    },
+    songList (data) {
+      songList(data)
+    },
+    async listPlay (id) {
+      console.log(id)
+      const { data: { playlist: { trackIds } } } = await SongListDetailsAPI({
+        id
+      })
+      playFn(trackIds)
     }
   }
 }
@@ -257,6 +272,7 @@ export default {
           padding: 3px 8px;
           border-radius: 5px;
         }
+
         .slideshow_img {
           width: 100%;
           height: 100%;
@@ -319,11 +335,32 @@ export default {
               margin-right: 0;
             }
             // 图片
-            div {
+            .daily_push {
               border-radius: 5px;
               overflow: hidden;
               width: 100%;
               height: 200px;
+              position: relative;
+              font-size: 11px;
+              .view_counts{
+                position: absolute;
+                top: 0%;
+                right: 2%;
+                color: #fff;
+              }
+              .playBtn {
+                opacity: 0;
+                position: absolute;
+                bottom: 0;
+                right: 0;
+                width:40px;
+                height: 40px;
+                transform: translate(-50%, -50%);
+                transition: all 0.3s;
+              }
+               &:hover .playBtn {
+                  opacity: 0.9;
+                }
               img {
                 width: 100%;
                 height: 100%;
@@ -359,7 +396,7 @@ export default {
             height: 75px;
             border-radius: 0.1667rem;
             overflow: hidden;
-            font-size: .25rem;
+            font-size: 0.25rem;
             .play {
               width: 0.8333rem;
               height: 0.8333rem;

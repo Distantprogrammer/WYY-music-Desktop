@@ -17,7 +17,7 @@
                 <span class="title_rigth">{{officialTracks.tracks[index].ar[0].name}}</span>
               </div>
             </li>
-            <li>
+            <li @click="$parent.paramsFn(officialTracks)">
               查看全部
               <i class="iconfont icon-arrow-right-bold arrow_right"></i>
             </li>
@@ -35,7 +35,8 @@ export default {
   },
   methods: {
     playFn (data) {
-      console.log(this.officiaTracks.trackIds[0].id)
+      // console.log(this.officialTracks)
+      // console.log(this.officiaTracks.trackIds[0].id)
       playFn(data)
     }
   }
@@ -52,8 +53,11 @@ export default {
         height: 35px;
         line-height: 35px;
         border-radius: 2px;
-        color: #000;
+        // color: #000;
         font-weight: 600;
+        &:last-child{
+          color: #fff;
+        }
         &:nth-child(2n-1) {
           background-color: #2f2f2f;
         }

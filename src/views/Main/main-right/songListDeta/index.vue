@@ -226,6 +226,12 @@ export default {
   .introduce {
     margin-top: 10px;
   }
+  .introduce{
+    max-width: 500px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+  }
   .songBtn {
     .transparent {
       background-color: transparent;

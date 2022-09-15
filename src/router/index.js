@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import recommendSong from '@/views/Main/main-right/FoundMusic/views/RecommendSong.vue'
 
 Vue.use(VueRouter)
 
@@ -22,10 +23,11 @@ const routes = [
           {
             path: '', // 默认子路由
             name: 'recommendSong',
-            component: () =>
-              import(
-                '@/views/Main/main-right/FoundMusic/views/RecommendSong.vue'
-              )
+            component: recommendSong
+            // () =>
+            //   import(
+            //     '@/views/Main/main-right/FoundMusic/views/RecommendSong.vue'
+            //   )
           },
           {
             path: 'customization', // 专属定制

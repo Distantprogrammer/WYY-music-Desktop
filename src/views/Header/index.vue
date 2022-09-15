@@ -57,12 +57,13 @@
         <ul class="usermessage">
           <li class="userPhoto">
             <div>
-              <a href="#"></a>
+              <a :style="{backgroundImage:`url(${profile.avatarUrl ?? 'https://test-1306735889.cos.ap-guangzhou.myqcloud.com/%E6%9C%AA%E7%99%BB%E5%BD%95.jpg'})`}"></a>
             </div>
-            <div>
-              <em>-远方的远</em>
+            <div @click="loginShowFn" ref="userControl">
+              <em>{{profile.nickname ?? '未登录'}}</em>
               <span>CVIP·伍</span>
-              <i class="iconfont" @click="loginShow = true">&#xe687;</i>
+              <i class="iconfont">&#xe687;</i>
+              <userControl v-model="userControlShow" v-if="userControlShow" />
             </div>
           </li>
           <li>
@@ -92,12 +93,18 @@
       </div>
 
     </div>
-    <Login v-model="loginShow"/>
+    <Login v-model="loginShow" v-if="loginShow" @inform='inform'/>
+    <!-- <div ref="userControl"> -->
+       <!-- <userControl v-model="userControlShow"  ref="userControl" v-if="userControlShow" /> -->
+    <!-- </div> -->
+
     <div style="height: 3.125rem"></div>
   </div>
 </template>
 
 <script>
+import { showBox } from '@/utils/documentClick'
+import userControl from './components/userControl.vue'
 import Login from '@/views/Login'
 import { DefaultSearchAPI } from '@/api'
 import { setItem } from '@/utils/storage'
@@ -109,18 +116,23 @@ export default {
   data () {
     return {
       loginShow: false, // 登录界面
+      userControlShow: false, // 用户简洁信息
       searchValue: '', // 搜索内容
-      searchBox: null, // 搜索界面的大盒子
+      searchBox: false, // 搜索界面的大盒子
       searchShow: true, // 搜索历史与搜索建议显示隐藏
       searchHistories: [], // 存储历史记录
-      defaultSearch: '' // 默认搜索建议
+      defaultSearch: '', // 默认搜索建议
+      profile: this.$store.getters.profile ?? ''
     }
   },
   components: {
     searchHistory,
     searchSuggestion,
-    Login
+    Login,
+    userControl
 
+  },
+  computed: {
   },
   async created () {
     this.onDefaultSearch()
@@ -130,16 +142,9 @@ export default {
     this.defaultSearch = data
   },
   mounted () {
-    // 点击空白区域关闭盒子
-    document.addEventListener('click', (e) => {
-      if (this.$refs.search_box) {
-        // contains 包含
-        // search_box是否包含在document中
-        if (!this.$refs.search_box.contains(e.target)) {
-          this.searchBox = false
-        }
-      }
-    })
+    // if (this.searchBox) {
+    document.addEventListener('click', (e) => { this.searchBox = showBox(this.$refs.search_box, this.searchBox, e) })
+    // }
   },
   methods: {
     // 控制盒子显示隐藏
@@ -176,7 +181,21 @@ export default {
           data: { data }
         } = await DefaultSearchAPI()
         this.defaultSearch = data
-      }, 120000)
+      }, 200000)
+    },
+    inform (data) {
+      this.profile = data.profile
+    },
+    // 判断是否登录
+    loginShowFn () {
+      if (!this.profile) {
+        this.loginShow = true
+      } else {
+        this.userControlShow = true
+        document.addEventListener('click', (e) => {
+          this.userControlShow = showBox(this.$refs.userControl, this.userControlShow, e)
+        })
+      }
     }
   }
 }

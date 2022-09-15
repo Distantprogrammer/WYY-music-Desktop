@@ -82,8 +82,9 @@
           @timeupdate="timeupdateFn($event.srcElement.currentTime)"
           ref="audio"
           preload="true"
-          :src="`https://music.163.com/song/media/outer/url?id=${id}.mp3`"
+          :src="url ?? `https://music.163.com/song/media/outer/url?id=${id}.mp3`"
         ></audio>
+        <!-- :src="`https://music.163.com/song/media/outer/url?id=${id}.mp3`" -->
       </div>
       <!-- 音效 -->
       <div class="acoustics" v-if="imgShow">
@@ -100,7 +101,7 @@
 </template>
 
 <script>
-import { getSongByIdAPI, getLyricByIdAPI, RecommendNewMusicAPI } from '@/api'
+import { getSongByIdAPI, getLyricByIdAPI, RecommendNewMusicAPI, getSongUrlAPI, getCheckMusicAPI } from '@/api'
 import { mapState } from 'vuex'
 import { getItem, setItem } from '@/utils/storage'
 import img from '@/images/logo.jpg'
@@ -128,7 +129,8 @@ export default {
       scrollDelay: '0', // 停顿时间
       lyricArrSort: [], // 歌词时间差排序的
       // playTable: []// 播放歌单列表
-      voiceOnOff: true // 声音开关图标
+      voiceOnOff: true, // 声音开关图标
+      url: null // 歌曲url
     }
   },
   components: {
@@ -241,10 +243,17 @@ export default {
   methods: {
     async getSong (id) {
       try {
+        // 判断歌曲是否可用
+        const { data } = await getCheckMusicAPI(id)
+        if (!data.success) {
+          this.$message.error(data.message)
+          return
+        }
         // 获取歌曲详情, 和歌词方法
         const res = await getSongByIdAPI(id)
         // 把id赋值给this.id
         this.id = id
+        this.getSongUrlAPI(id)
         this.imgShow = true
         // console.log(res)
         this.songInfo = res.data.songs[0]
@@ -408,6 +417,14 @@ export default {
       } else {
         this.getSong(1959667345)
       }
+    },
+    // 获歌曲url
+    async getSongUrlAPI (id) {
+      const { data } = await getSongUrlAPI({
+        id: id,
+        level: 'standard'
+      })
+      this.url = data.data[0].url
     }
     // async startFn (num) {
     //   // 如果当前播放的歌曲是第一个，那么减一就会报错，使用数组方法slice获取数组末尾的数据
@@ -570,9 +587,10 @@ export default {
 
       .progressBar {
         width: 16.393rem;
-        height: 0.182rem;
+        // height: 0.182rem;
         height: 0.3333rem; // 改
-        border-radius: 0.036rem;
+        overflow: hidden;
+        border-radius: 0.536rem;
         margin: 0 0.82rem;
         background-color: #cdcdcd;
         transition: all 0.2s;

@@ -26,7 +26,7 @@
         <td class="isfontSize">{{ obj.ar[0].name }}</td>
         <td class="isfontSize">{{ obj.al.name }}</td>
         <td class="isfontSize">{{ obj.dt | secondeTime }}</td>
-        <td class="isfontSize" v-if="listTable.length === 7 ">热度</td>
+        <td class="isfontSize" v-if="listTable.length === 6 ">热度</td>
       </tr>
     </tbody>
   </table>

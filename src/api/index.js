@@ -21,7 +21,7 @@ import {
 import { getSongUrl } from './download'
 import { phoneLogin, emailLogin, QRkey, QRcreate, QRcheck, loginStatus } from './login'
 import { userAccount, userDetail } from './user'
-import { playlistCatlist, playlistHot, topPlaylist, playlistHighquality, relatedPlaylist, playlistTrack } from './playList'
+import { playlistCatlist, playlistHot, topPlaylist, playlistHighquality, relatedPlaylist, playlistTrack, playlistHighqualityTags } from './playList'
 /**
  * 个性推荐
  */
@@ -46,6 +46,7 @@ export const SongListDetailsAPI = SongListDetails // 歌单详情
 export const playlistCatlistAPI = playlistCatlist // 歌单分类
 export const playlistHotAPI = playlistHot // 热门歌单分类
 export const topPlaylistAPI = topPlaylist // 歌单 ( 网友精选碟 )
+export const playlistHighqualityTagsAPI = playlistHighqualityTags // 精品歌单标签列表
 export const playlistHighqualityAPI = playlistHighquality // 精品歌单标签列表
 export const relatedPlaylistAPI = relatedPlaylist // 相关歌单推荐
 export const playlistTrackAPI = playlistTrack // 获取歌单所有歌曲

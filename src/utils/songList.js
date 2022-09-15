@@ -1,4 +1,4 @@
-import { SongListDetailsAPI } from '@/api'
+import { playlistTrackAPI, SongListDetailsAPI } from '@/api'
 import store from '@/store'
 import router from '@/router'
 export default async function songList (data) {
@@ -8,7 +8,13 @@ export default async function songList (data) {
     const res = await SongListDetailsAPI({
       id: data
     })
+    const { data: { songs } } = await playlistTrackAPI({
+      id: data,
+      limit: 50,
+      offset: 0
+    })
     const { data: { playlist } } = res
+    playlist.tracks = songs
     store.commit('setsongListMsg', playlist)
   } else {
     store.commit('setsongListMsg', data)

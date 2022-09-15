@@ -1,66 +1,153 @@
 <template>
-  <div class="songMenu">
+  <div
+    class="songMenu"
+    v-loading.fullscreen.lock="fullscreenLoading"
+    element-loading-text="拼命加载中"
+    element-loading-spinner="el-icon-loading"
+    element-loading-background="rgba(0, 0, 0, 0.8)"
+  >
     <div class="BoutiquePlaylist">
-      <img src="@/images/logo.jpg" alt="" />
+      <img :src="boutiquePlaylist.coverImgUrl" alt="" />
       <div>
         <el-button round>
           <i class="iconfont icon-jingpin"></i> 精品歌单
         </el-button>
-        <h2>按时给法官是否该i</h2>
+        <h2>{{ boutiquePlaylist.name }}</h2>
       </div>
     </div>
     <div class="songMenuNavBar">
-      <el-button round size="mini"
-        >{{ activeName }} <i class="el-icon-arrow-right"></i
-      ></el-button>
+      <!-- 弹出层 -->
+      <el-popover
+      class="elpopover"
+        placement="bottom-start"
+        title="全部歌单"
+        width="200"
+        trigger="click"
+        @show='getplaylistCatlist'
+      >
+      <!-- 放置组件 -->
+      <popover :listClass ='listClass'/>
+        <el-button round size="mini" slot="reference"
+          >{{ activeName }} <i class="el-icon-arrow-right"></i
+        ></el-button>
+      </el-popover>
+
       <el-tabs v-model="activeName" @tab-click="handleClick" :stretch="true">
-        <el-tab-pane :label="item.name" :name="item.name" v-for="item in playlistHot" :key="item.id" @click="gettopPlaylist"></el-tab-pane>
+        <el-tab-pane
+          :label="item.name"
+          :name="item.name"
+          v-for="item in playlistHot"
+          :key="item.id"
+        ></el-tab-pane>
       </el-tabs>
     </div>
-    <songMenu v-if="topPlaylist" :topPlaylist ="topPlaylist"/>
+    <songMenu v-if="topPlaylist" :topPlaylist="topPlaylist" />
+    <el-row type="flex" justify="center">
+      <el-pagination
+        background
+        layout="prev, pager, next"
+        :page-size="page.size"
+        :current-page="page.page"
+        :total="page.total"
+        @current-change="changePage"
+      />
+    </el-row>
   </div>
 </template>
 
 <script>
-import { playlistHotAPI, topPlaylistAPI } from '@/api'
+import { playlistHotAPI, topPlaylistAPI, playlistHighqualityAPI, playlistCatlistAPI } from '@/api'
+import popover from '../components/popover.vue'
 import songMenu from '@/components/songMenu'
 export default {
   name: 'songMenuIndex',
   components: {
-    songMenu
+    songMenu,
+    popover
   },
   data () {
     return {
       activeName: '华语', // tab 选中项
       playlistHot: '', // 热门歌单
-      topPlaylist: '' // 歌单标签
+      boutiquePlaylist: '', // 精品歌单
+      topPlaylist: JSON.parse(window.sessionStorage.getItem('topPlaylist')), // 歌单标签
+      fullscreenLoading: false, // 加载动画
+      page: {
+        page: 1, // 当前页码
+        size: 30,
+        total: 0 // 总数
+      },
+      listClass: [] // 歌单分类数据
     }
   },
   created () {
     this.getplaylistHot()
     this.gettopPlaylist()
+    this.getplaylistHighquality()
+  },
+  watch: {
+    async activeName () {
+      this.fullscreenLoading = true
+      await this.gettopPlaylist(this.activeName)
+      this.getplaylistHighquality()
+      this.fullscreenLoading = false
+    }
   },
   methods: {
     handleClick (tab, event) {
+      // this.gettopPlaylist(this.activeName)
       // console.log(tab, event)
     },
+    // 热门标签
     async getplaylistHot () {
       try {
-        const { data: { tags } } = await playlistHotAPI()
+        const {
+          data: { tags }
+        } = await playlistHotAPI()
         this.playlistHot = tags
       } catch (error) {
         this.$message.error('请求数据失败')
       }
     },
-    async gettopPlaylist () {
-      const { data: { playlists } } = await topPlaylistAPI({
-        cat: this.activeName,
-        limit: 50,
-        offset: 0
+    async gettopPlaylist (activeName) {
+      this.fullscreenLoading = true
+      const {
+        data: { playlists, total }
+      } = await topPlaylistAPI({
+        cat: activeName ?? this.activeName,
+        limit: this.page.size,
+        offset: this.page.page * this.page.size
       })
       this.topPlaylist = playlists
+      this.page.total = total
+      window.sessionStorage.setItem(
+        'topPlaylist',
+        JSON.stringify(this.topPlaylist)
+      )
+      this.fullscreenLoading = false
+    },
+    // 精品歌单
+    async getplaylistHighquality () {
+      const {
+        data: { playlists }
+      } = await playlistHighqualityAPI({
+        cat: this.activeName,
+        limit: 1
+        // before: this.topPlaylist[this.topPlaylist.length - 1].updateTime
+      })
+      // console.log(playlists)
+      this.boutiquePlaylist = playlists[0]
+    },
+    // 分页
+    changePage (newPage) {
+      this.page.page = newPage
+      this.gettopPlaylist(this.activeName)
+    },
+    // 获取歌单分类
+    async getplaylistCatlist () {
+      const { data } = await playlistCatlistAPI()
+      this.listClass = data
     }
-
   }
 }
 </script>
@@ -69,8 +156,9 @@ export default {
 .songMenu {
   .BoutiquePlaylist {
     width: 100%;
-    height: 6.2917rem;
+    height: 151.0008px;
     margin-bottom: 20px;
+    background-color: transparent;
     background-image: linear-gradient(
       to right,
       rgb(194, 111, 111),
@@ -144,5 +232,24 @@ export default {
       }
     }
   }
+  /deep/.el-pagination.is-background .el-pager li {
+    background-color: transparent !important;
+    border: 1px #878787 solid;
+    color: rgb(32, 112, 112);
+  }
+  /deep/.el-pagination button:disabled {
+    background-color: #393939;
+  }
+  /deep/.el-pagination.is-background .btn-next,
+  .el-pagination.is-background .btn-prev {
+    background-color: #393939;
+  }
+  /deep/.el-pagination.is-background .el-pager li:not(.disabled).active {
+    color: #fff;
+  }
+  .elpopover{
+    padding: 0 !important;
+  }
+
 }
 </style>

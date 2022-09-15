@@ -51,7 +51,7 @@
 
 <script>
 import portionTitle from '../components/portion-title.vue'
-import { RankingListAPI, SongListDetailsAPI } from '@/api'
+import { RankingListAPI, SongListDetailsAPI, playlistTrackAPI } from '@/api'
 import Playbtn from '@/components/playBtn.vue'
 import playFn from '@/utils/play'
 // import { getItem } from '@/utils/storage'
@@ -110,7 +110,13 @@ export default {
         const res = await SongListDetailsAPI({
           id: data
         })
+        const { data: { songs } } = await playlistTrackAPI({
+          id: data,
+          // limit: 5,
+          offset: 0
+        })
         const { data: { playlist } } = res
+        playlist.tracks = songs
         this.$store.commit('setsongListMsg', playlist)
         this.fullscreenLoading = false
       } else {

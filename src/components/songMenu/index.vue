@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import { SongListDetailsAPI } from '@/api/index'
+import { playlistTrackAPI } from '@/api/index'
 import songList from '@/utils/songList'
 import playFn from '@/utils/play'
 export default {
@@ -29,6 +29,11 @@ export default {
   props: {
     topPlaylist: {
       type: [Array, Object]
+    }
+  },
+  data () {
+    return {
+
     }
   },
   methods: {
@@ -40,17 +45,16 @@ export default {
     songList (data) {
       songList(data)
     },
+    // 播放所有歌曲
     async listPlay (id) {
-      console.log(id)
-      const {
-        data: {
-          playlist: { trackIds }
-        }
-      } = await SongListDetailsAPI({
-        id
+      const { data } = await playlistTrackAPI({
+        id,
+        // limit: 20,
+        offset: 0
       })
-      playFn(trackIds)
+      playFn(data.songs)
     }
+
   }
 }
 </script>

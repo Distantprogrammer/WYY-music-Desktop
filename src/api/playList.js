@@ -21,9 +21,15 @@ export const topPlaylist = (params) =>
     params
   })
   // 精品歌单标签列表
-export const playlistHighquality = (params) =>
+export const playlistHighqualityTags = (params) =>
   request({
     url: '/playlist/highquality/tags',
+    params
+  })
+  // 获取精品歌单
+export const playlistHighquality = (params) =>
+  request({
+    url: '/top/playlist/highquality',
     params
   })
   // 相关歌单推荐 id : 歌单 id
@@ -38,6 +44,6 @@ export const relatedPlaylist = (params) =>
   // 可选参数 : offset : 默认值为0
 export const playlistTrack = (params) =>
   request({
-    url: '/playlist/highquality/tags',
+    url: '/playlist/track/all',
     params
   })

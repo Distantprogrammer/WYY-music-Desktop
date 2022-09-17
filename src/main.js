@@ -14,6 +14,7 @@ import '@/utils/numberFormat.js'
 import router from './router'
 import store from './store'
 import components from '@/components'
+import vClickOutside from 'v-click-outside'
 // 自定义指令
 import * as directives from '@/directives'
 const arr = Object.keys(directives)
@@ -37,6 +38,8 @@ window.onload = function () {
   window.addEventListener('resize', getHeight)
   getHeight()
 }
+
+Vue.use(vClickOutside)
 
 Vue.use(components)
 

@@ -3,15 +3,15 @@
     <ul>
       <li v-for="item in topPlaylist" :key="item.id">
         <div class="msgBox">
+          <img :src="item.coverImgUrl" @click="songList(item.id)" />
           <div class="view_counts">
             <i class="iconfont icon-24gl-play"></i>
             {{ item.playCount | numberFormat }}
           </div>
           <playBtn class="playBtn" @click.native="listPlay(item.id)" />
-          <img :src="item.coverImgUrl" @click="songList(item.id)" />
           <div class="author">
             <i class="iconfont icon-24gl-play"></i>
-            {{ item.creator.description }}
+            {{ item.creator.nickname }}
           </div>
         </div>
         <p class="playlist_introduced">{{ item.name }}</p>
@@ -32,9 +32,7 @@ export default {
     }
   },
   data () {
-    return {
-
-    }
+    return {}
   },
   methods: {
     playFn (data) {
@@ -54,7 +52,6 @@ export default {
       })
       playFn(data.songs)
     }
-
   }
 }
 </script>
@@ -86,6 +83,12 @@ export default {
         height: 200px;
         position: relative;
         font-size: 11px;
+        img {
+          -webkit-filter: opacity(80%); /* Chrome, Safari, Opera */
+          filter: opacity(80%); // 图片透明度
+          width: 100%;
+          height: 100%;
+        }
         .view_counts,
         .author {
           position: absolute;
@@ -112,10 +115,6 @@ export default {
         }
         &:hover .playBtn {
           opacity: 0.9;
-        }
-        img {
-          width: 100%;
-          height: 100%;
         }
       }
 

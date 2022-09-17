@@ -16,21 +16,20 @@
       </div>
     </div>
     <div class="songMenuNavBar">
-      <!-- 弹出层 -->
-      <el-popover
-      class="elpopover"
-        placement="bottom-start"
-        title="全部歌单"
-        width="200"
-        trigger="click"
-        @show='getplaylistCatlist'
-      >
-      <!-- 放置组件 -->
-      <popover :listClass ='listClass'/>
-        <el-button round size="mini" slot="reference"
-          >{{ activeName }} <i class="el-icon-arrow-right"></i
-        ></el-button>
-      </el-popover>
+      <el-button round size="mini" v-popover:popover  @click="getplaylistCatlist"
+        >{{ activeName }} <i class="el-icon-arrow-right"></i>
+        <!-- 弹出层 -->
+
+          <!-- 放置组件 -->
+          <popover
+           v-click-outside="onClickOutside"
+          v-if="popoverShow"
+          class="elpopover"
+          v-model="activeName"
+            :filterList="filterList"
+            :categories="listClass.categories"
+          />
+      </el-button>
 
       <el-tabs v-model="activeName" @tab-click="handleClick" :stretch="true">
         <el-tab-pane
@@ -41,6 +40,7 @@
         ></el-tab-pane>
       </el-tabs>
     </div>
+    <!-- 歌单组件 -->
     <songMenu v-if="topPlaylist" :topPlaylist="topPlaylist" />
     <el-row type="flex" justify="center">
       <el-pagination
@@ -56,7 +56,12 @@
 </template>
 
 <script>
-import { playlistHotAPI, topPlaylistAPI, playlistHighqualityAPI, playlistCatlistAPI } from '@/api'
+import {
+  playlistHotAPI,
+  topPlaylistAPI,
+  playlistHighqualityAPI,
+  playlistCatlistAPI
+} from '@/api'
 import popover from '../components/popover.vue'
 import songMenu from '@/components/songMenu'
 export default {
@@ -77,7 +82,9 @@ export default {
         size: 30,
         total: 0 // 总数
       },
-      listClass: [] // 歌单分类数据
+      listClass: [], // 歌单分类数据
+      filterList: [], // 过滤好的歌单分类
+      popoverShow: false
     }
   },
   created () {
@@ -147,6 +154,22 @@ export default {
     async getplaylistCatlist () {
       const { data } = await playlistCatlistAPI()
       this.listClass = data
+      this.listSub(data)
+    },
+    // 处理数据
+    listSub (data) {
+      for (let index = 0; index <= 4; index++) {
+        this.filterList[index] = []
+        data.sub.forEach((obj, i) => {
+          if (obj.category === index) {
+            this.filterList[index].push(obj)
+          }
+        })
+      }
+      this.popoverShow = true
+    },
+    onClickOutside () {
+      this.popoverShow = false
     }
   }
 }
@@ -201,12 +224,14 @@ export default {
     width: 100%;
     display: flex;
     justify-content: space-between;
+    position: relative;
     .el-button {
       width: 100px;
       height: 30px;
       background-color: transparent;
       padding: 0;
       color: @navBar;
+      border: 1px @btnBorder solid;
       font-size: 14px;
     }
     .el-tabs {
@@ -247,9 +272,12 @@ export default {
   /deep/.el-pagination.is-background .el-pager li:not(.disabled).active {
     color: #fff;
   }
-  .elpopover{
+  .elpopover {
+    position: absolute;
+    top: 30%;
+    left: 0%;
+    z-index: 120;
     padding: 0 !important;
   }
-
 }
 </style>

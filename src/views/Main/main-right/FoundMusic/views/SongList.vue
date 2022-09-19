@@ -88,9 +88,9 @@ export default {
     }
   },
   created () {
-    this.getplaylistHot()
-    this.gettopPlaylist()
-    this.getplaylistHighquality()
+    // this.getplaylistHot()
+    // this.gettopPlaylist()
+    // this.getplaylistHighquality()
   },
   watch: {
     async activeName () {

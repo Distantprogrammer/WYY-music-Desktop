@@ -57,13 +57,13 @@
         <ul class="usermessage">
           <li class="userPhoto">
             <div>
-              <a :style="{backgroundImage:`url(${profile.avatarUrl ?? 'https://test-1306735889.cos.ap-guangzhou.myqcloud.com/%E6%9C%AA%E7%99%BB%E5%BD%95.jpg'})`}"></a>
+              <a :style="{backgroundImage:`url(${profile.avatarUrl ? profile.avatarUrl : 'https://test-1306735889.cos.ap-guangzhou.myqcloud.com/%E6%9C%AA%E7%99%BB%E5%BD%95.jpg'})`}"></a>
             </div>
             <div @click="loginShowFn" ref="userControl">
-              <em>{{profile.nickname ?? '未登录'}}</em>
+              <em>{{profile.nickname ? profile.nickname : '未登录'}}</em>
               <span>CVIP·伍</span>
               <i class="iconfont">&#xe687;</i>
-              <userControl v-model="userControlShow" v-if="userControlShow" />
+              <userControl v-model="userControlShow" v-if="userControlShow" @inform='inform'/>
             </div>
           </li>
           <li>

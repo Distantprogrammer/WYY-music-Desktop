@@ -67,6 +67,7 @@ export default {
           // 这一步会返回cookie
           clearInterval(this.timer)
           this.$message('授权登录成功')
+          // this.$parent.getLoginStatus(statusRes.cookie)
           await this.getLoginStatus(statusRes.cookie)
           // 设置到vuex里处理
           this['user/setcookies'](statusRes.cookie)

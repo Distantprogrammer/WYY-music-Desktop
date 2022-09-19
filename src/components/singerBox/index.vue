@@ -1,13 +1,13 @@
 <template>
   <div class="singerBox">
-    <ul>
+    <!-- <ul>
       <li v-for="(a, i) in 20" :key="i">
         <div class="msgBox">
           <img src="@/images/logo.jpg" />
         </div>
         <p class="playlist_introduced">{{ 454564545145 }}</p>
       </li>
-    </ul>
+    </ul> -->
   </div>
 </template>
 

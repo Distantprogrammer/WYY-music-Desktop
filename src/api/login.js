@@ -59,3 +59,10 @@ export function QRcheck (key) {
 // 4. 游客登录 说明 : 直接调用此接口, 可获取游客cookie
 
 // 刷新登录 ,返回内容包含新的cookie(不支持刷新二维码登录的cookie)
+
+// 退出登录
+export function logout () {
+  return request({
+    url: '/logout'
+  })
+}

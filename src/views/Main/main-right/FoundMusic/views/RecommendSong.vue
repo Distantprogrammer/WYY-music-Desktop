@@ -169,11 +169,11 @@ export default {
     Playbtn
   },
   created () {
-    this.BannerImg() // 轮播图
-    this.recommendSong() // 推荐歌单
-    this.NewMusic() // 最新音乐
-    this.Exclusive() // 独家放送
-    this.RecommendedMV() // 推荐mv
+    // this.BannerImg() // 轮播图
+    // this.recommendSong() // 推荐歌单
+    // this.NewMusic() // 最新音乐
+    // this.Exclusive() // 独家放送
+    // this.RecommendedMV() // 推荐mv
   },
   // 检查本地存储是否有，没有自动发起接口
   methods: {

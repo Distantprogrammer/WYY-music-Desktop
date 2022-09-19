@@ -70,7 +70,7 @@ export default {
     }
   },
   created () {
-    this.getRankingList() // 排行榜
+    // this.getRankingList() // 排行榜
   },
   methods: {
     // 排行榜

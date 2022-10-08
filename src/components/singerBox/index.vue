@@ -1,18 +1,24 @@
 <template>
   <div class="singerBox">
-    <!-- <ul>
-      <li v-for="(a, i) in 20" :key="i">
+    <ul>
+      <li v-for="obj in artists" :key="obj.id">
         <div class="msgBox">
-          <img src="@/images/logo.jpg" />
+          <img :src="obj.img1v1Url" />
         </div>
-        <p class="playlist_introduced">{{ 454564545145 }}</p>
+        <p class="playlist_introduced">{{ obj.name }} <i v-if="obj.accountId" class="iconfont icon-zhanghaoguanli"></i></p>
       </li>
-    </ul> -->
+    </ul>
   </div>
 </template>
 
 <script>
-export default {}
+export default {
+  props: {
+    artists: {
+      type: [Object, Array]
+    }
+  }
+}
 </script>
 
 <style lang="less" scoped>
@@ -53,6 +59,11 @@ export default {}
         color: #fff;
         padding: 10px;
         font-size: 14px;
+        .icon-zhanghaoguanli{
+          color: rgb(187, 68, 68);
+           font-size: 18px;
+          float:right;
+        }
       }
     }
   }

@@ -2,7 +2,8 @@ import axios from 'axios'
 // import store from '@/store'
 // import { getCookie } from '@/utils/auth'
 const request = axios.create({
-  // withCredentials: true,
+  // withCredentials: true, 表示每次请求可以携带 cookie 和 session
+  // 后台的跨域模块  "Access-Control-Allow-Origin : “*” 就不能写 * 号了 必须指定 域名  比如 "Access-Control-Allow-Origin : “http://localhost:8080”
   // baseURL: process.env.VUE_APP_BASE_API, // 根据开发环境还是生产环境更改基准地址
   timeout: 5000, // 超时时间
   // baseURL: 'http://192.168.21.30:3000/'

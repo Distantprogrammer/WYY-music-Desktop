@@ -1,5 +1,10 @@
 <template>
-  <div class="Singer">
+  <div
+    class="Singer"
+    v-infinite-scroll="getartistList"
+    infinite-scroll-disabled="disabled"
+    infinite-scroll-delay=1000
+  >
     <div
       class="singerNavBar clearfix"
       v-for="(item, index) in singerType"
@@ -19,7 +24,9 @@
         </p>
       </div>
     </div>
-    <singerBox />
+    <singerBox v-if="singerList" :artists="singerList.artists" />
+    <p class="load" v-if="loading">加载中...</p>
+    <p class="load" v-if="noMore">没有更多了</p>
   </div>
 </template>
 
@@ -39,7 +46,7 @@ export default {
         ['全部', '华语', '欧美', '日本', '韩国', '其他'],
         ['全部', '男歌手', '女歌手', '乐队组合'],
         [
-          '热门',
+          // '热门',
           'A',
           'B',
           'C',
@@ -70,12 +77,6 @@ export default {
         ]
       ],
       value: ['全部', '全部', 'A'],
-      type: {
-        '-1': '全部',
-        1: '男歌手',
-        2: '女歌手',
-        3: '乐队'
-      },
       area: {
         '-1': '全部',
         7: '华语',
@@ -84,32 +85,67 @@ export default {
         16: '韩国',
         0: '其他'
       },
-      offset: 1
+      type: {
+        '-1': '全部',
+        1: '男歌手',
+        2: '女歌手',
+        3: '乐队组合'
+      },
+      offset: 1, // 分页
+      singerList: JSON.parse(window.sessionStorage.getItem('singerList')),
+      loading: false
     }
   },
-  computed: {},
+  created () {
+    this.getartistList()
+  },
+  computed: {
+    noMore () {
+      return !this.singerList.more
+    },
+    disabled () {
+      return this.loading || this.noMore
+    }
+  },
   watch: {},
   methods: {
     async getartistList (index, str) {
       this.$set(this.value, index, str)
-      const obj = {
-        area: '',
-        type: '',
-        initial: ''
+      this.loading = true
+      const obj = { area: '', type: '', initial: '' }
+      obj.area = Object.keys(this.area).find(
+        (key) => this.area[key] === this.value[0]
+      )
+      obj.type = Object.keys(this.type).find(
+        (key) => this.type[key] === this.value[1]
+      )
+      obj.initial = this.value[2]
+      // if (this.singerList.more ? !this.singerList.more : this.singerList.more) return // 是否有更多数据
+      try {
+        const { data } = await artistListAPI({
+          limit: 30,
+          offset: this.offset,
+          ...obj
+        })
+        this.offset++
+        // this.singerList = data
+        // console.log(data
+        // )
+        if (this.singerList.artists) {
+          console.log(222)
+          this.singerList.artists.push(await data.artists)
+          window.sessionStorage.setItem('singerList', JSON.stringify(this.singerList))
+        } else {
+          console.log(11)
+          this.singerList = data
+          window.sessionStorage.setItem('singerList', JSON.stringify(data))
+        }
+        console.log(this.singerList)
+
+        this.loading = false
+      } catch (error) {
+        this.$message.error('获取歌手列表失败')
       }
-      // const arr = {}
-      let i = 0
-      for (const key in obj) {
-        obj[key] = this.value[i]
-        i++
-      }
-      console.log({ ...obj })
-      const res = await artistListAPI({
-        limit: 30,
-        offset: this.offset,
-        ...obj
-      })
-      console.log(res)
     }
   }
 }
@@ -117,6 +153,11 @@ export default {
 
 <style lang="less" scoped>
 .Singer {
+  // height: 100%;
+  .load {
+    color: #fff;
+    text-align: center;
+  }
   .singerNavBar {
     display: flex;
     min-width: 1100px;
